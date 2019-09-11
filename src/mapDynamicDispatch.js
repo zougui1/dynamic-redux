@@ -53,7 +53,13 @@ const mapString = (_actions, dispatch, tempActions, states, store) => {
       throw new Error(`The reducer "${reducerName}" doesn't exists`);
     }
 
-    if (action !== 'resetReducer' && !states[reducer].actions[action]) {
+    if (action === 'resetReducer') {
+      console.log(states[reducer].actions[action])
+      tempActions[action] = () => dispatch(states[reducer].actions[action].reset());
+      return;
+    }
+
+    if (!states[reducer].actions[action]) {
       throw new Error(`The action "${action}" doesn't exists on the reducer "${reducerName}"`);
     }
 
