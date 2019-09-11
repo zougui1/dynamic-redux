@@ -1,4 +1,5 @@
 import _ from 'lodash';
+
 import { removeSpaces } from './utils';
 
 /**
@@ -73,4 +74,4 @@ function mapDynamicState(props) {
   }
 }
 
-module.exports = mapDynamicState;
+export default mapDynamicState;

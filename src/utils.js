@@ -3,8 +3,6 @@
  * @param {String[]} array
  * @returns {String[]}
  */
-const removeSpaces = array => {
+export const removeSpaces = array => {
   return array.map(str => str.trim()).filter(str => str);
 }
-
-exports.removeSpaces = removeSpaces;

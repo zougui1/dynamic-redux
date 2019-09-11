@@ -1,5 +1,10 @@
-const { createStore: rCreateStore, applyMiddleware, compose } = require('redux');
-const mapDynamicDispatch = require('./mapDynamicDispatch');
+import {
+  createStore as rCreateStore,
+  applyMiddleware,
+  compose
+} from 'redux';
+
+import mapDynamicDispatch from './mapDynamicDispatch';
 
 /**
  *
@@ -35,4 +40,4 @@ const createStore = (reducer, middlewares) => {
 }
 
 
-module.exports = createStore;
+export default createStore;

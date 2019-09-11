@@ -112,4 +112,4 @@ function mapDynamicDispatch(actions) {
 
 }
 
-module.exports = mapDynamicDispatch;
+export default mapDynamicDispatch;

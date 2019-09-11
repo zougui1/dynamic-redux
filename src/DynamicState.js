@@ -177,4 +177,4 @@ class DynamicState {
 
 }
 
-module.exports = DynamicState;
+export default DynamicState;

@@ -1,4 +1,4 @@
-const { combineReducers } = require('redux');
+import { combineReducers } from 'redux';
 
 class CombineStates {
 
@@ -43,4 +43,4 @@ class CombineStates {
 
 }
 
-module.exports = CombineStates;
+export default CombineStates;
