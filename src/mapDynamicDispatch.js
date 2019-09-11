@@ -25,7 +25,7 @@ const createDispatch = (states, action, dispatch, store) => {
     }
   });
 
-  newActions.get = mapDynamicState(`${action.reducerName}: ${action.name}`)(store.getState());
+  newActions.get =  () => mapDynamicState(`${action.reducerName}: ${action.name}`)(store.getState());
 
   return newActions;
 }
