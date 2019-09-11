@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
 import { removeSpaces } from './utils';
-import mapDynamicState from './mapDynamicState';
+import { mapDynamicState } from '.';
 
 /**
  *
