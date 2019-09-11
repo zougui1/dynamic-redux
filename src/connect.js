@@ -41,7 +41,7 @@ const getMap = (map, mapper) => {
  * @param {String | Object | Function | undefined} _mapDispatchToProps
  * @returns {Object}
  */
-const connect = (_mapStateToProps, _mapDispatchToProps) => {
+export const connect = (_mapStateToProps, _mapDispatchToProps) => {
   if(!rConnect) {
     throw error;
   }
@@ -51,5 +51,3 @@ const connect = (_mapStateToProps, _mapDispatchToProps) => {
 
   return rConnect(mapStateToProps, mapDispatchToProps);
 }
-
-export default connect;

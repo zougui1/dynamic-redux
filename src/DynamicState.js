@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import Actions from './Actions';
 
-class DynamicState {
+export class DynamicState {
 
   /**
    * @property {String} name
@@ -176,5 +176,3 @@ class DynamicState {
   }
 
 }
-
-export default DynamicState;

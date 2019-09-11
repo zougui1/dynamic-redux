@@ -11,7 +11,7 @@ import mapDynamicDispatch from './mapDynamicDispatch';
  * @param {Object} reducer
  * @param {Array?} middlewares
  */
-const createStore = (reducer, middlewares) => {
+export const createStore = (reducer, middlewares) => {
   if(typeof middlewares === 'object' && !Array.isArray(middlewares)) {
     let middlewaresArr = [];
     let i = 0;
@@ -38,6 +38,3 @@ const createStore = (reducer, middlewares) => {
 
   return store;
 }
-
-
-export default createStore;

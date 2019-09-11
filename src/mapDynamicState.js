@@ -49,7 +49,7 @@ const mapObject = (reducers, state, newState) => {
  * @param {String | Object} props
  * @returns {Function}
  */
-function mapDynamicState(props) {
+export function mapDynamicState(props) {
   return state => {
 
     if (!props) {
@@ -73,5 +73,3 @@ function mapDynamicState(props) {
     return newState;
   }
 }
-
-export default mapDynamicState;

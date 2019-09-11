@@ -86,7 +86,7 @@ const mapObject = (reducers, dispatch, tempActions, states, store) => {
   });
 }
 
-function mapDynamicDispatch(actions) {
+export function mapDynamicDispatch(actions) {
   return dispatch => {
 
     if (!actions) {
@@ -111,5 +111,3 @@ function mapDynamicDispatch(actions) {
   }
 
 }
-
-export default mapDynamicDispatch;

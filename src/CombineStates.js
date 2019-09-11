@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
 
-class CombineStates {
+export class CombineStates {
 
   /**
    * @property {Object} states
@@ -42,5 +42,3 @@ class CombineStates {
   }
 
 }
-
-export default CombineStates;
