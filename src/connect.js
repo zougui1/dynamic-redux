@@ -25,29 +25,29 @@ try {
  * @param {Function} dynamicMapper
  * @returns {Function | undefined}
  */
-const getMapper = (mapper, dynamicMapper) => {
-  if (_.isFunction(mapper)) {
-    return mapper;
-  } else if (_.isString(mapper) || _.isObject(mapper)) {
-    return dynamicMapper(mapper);
+const getMap = (map, mapper) => {
+  if (_.isFunction(map)) {
+    return map;
+  } else if (_.isString(map) || _.isObject(map)) {
+    return mapper(map);
   }
 
   return null;
 }
 
 /**
- *
+ * use direct string and object to transform them with the dynamic mappers and make them consumable for the for the `connect` function of *react-redux*
  * @param {String | Object | Function | undefined} _mapStateToProps
  * @param {String | Object | Function | undefined} _mapDispatchToProps
  * @returns {Object}
  */
 const connect = (_mapStateToProps, _mapDispatchToProps) => {
-  const mapStateToProps = getMapper(_mapStateToProps, mapDynamicState);
-  const mapDispatchToProps = getMapper(_mapDispatchToProps, mapDynamicDispatch);
-
   if(!rConnect) {
     throw error;
   }
+
+  const mapStateToProps = getMap(_mapStateToProps, mapDynamicState);
+  const mapDispatchToProps = getMap(_mapDispatchToProps, mapDynamicDispatch);
 
   return rConnect(mapStateToProps, mapDispatchToProps);
 }
