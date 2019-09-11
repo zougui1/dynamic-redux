@@ -80,7 +80,7 @@ const objectAction = baseAction(validatePropObject);
 // action template for numbers
 const numberAction = baseAction(validatePropNumber);
 
-class Actions {
+export class Actions {
 
   // actions for arrays
   static array = arrayAction(null, nativeFunction);
@@ -103,5 +103,3 @@ class Actions {
   });
 
 }
-
-export default Actions;

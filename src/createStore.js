@@ -4,7 +4,7 @@ import {
   compose
 } from 'redux';
 
-import mapDynamicDispatch from './mapDynamicDispatch';
+import { mapDynamicDispatch } from '.';
 
 /**
  *

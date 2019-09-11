@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import Actions from './Actions';
+import { Actions } from './Actions';
 
 export class DynamicState {
 
