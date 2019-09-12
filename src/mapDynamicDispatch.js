@@ -1,7 +1,8 @@
 import _ from 'lodash';
 
 import { removeSpaces } from './utils';
-import { mapDynamicState } from '.';
+
+const reActions = /(push|pop|shift|unshift|concat|set|merge|filter|map|reduce|inc|dec)/;
 
 /**
  *
@@ -13,21 +14,18 @@ import { mapDynamicState } from '.';
  * @param {Function} dispatch
  * @param {Object} store
  * @param {Function} store.getState
- * @returns {Object}
  */
-const createDispatch = (states, action, dispatch, store) => {
-  const actions = states[action.reducer].actions[action.name];
-  const newActions = {};
+const createDispatch = (states, action, dispatch, tempActions) => {
+  const actions = states[action.reducer].actions[action.propName];
 
   _.forIn(actions, (actionCreator, name) => {
-    newActions[name] = arg => {
-      return dispatch(actionCreator(arg));
+    if (name === action.kind) {
+      tempActions[action.name] = arg => {
+        return dispatch(actionCreator(arg));
+      }
     }
   });
 
-  newActions.get =  () => mapDynamicState(`${action.reducerName}: ${action.name}`)(store.getState())[action.name];
-
-  return newActions;
 }
 
 /**
@@ -37,7 +35,7 @@ const createDispatch = (states, action, dispatch, store) => {
  * @param {Object} tempActions
  * @param {Object} states
  */
-const mapString = (_actions, dispatch, tempActions, states, store) => {
+const mapString = (_actions, dispatch, tempActions, states) => {
   const stateParts = removeSpaces(_actions.split(':'));
 
   if (stateParts.length < 2) {
@@ -54,18 +52,25 @@ const mapString = (_actions, dispatch, tempActions, states, store) => {
     }
 
     if (action === 'resetReducer') {
-      console.log(states[reducer].actions[action])
       tempActions[action] = () => dispatch(states[reducer].actions[action].reset());
       return;
     }
 
-    if (!states[reducer].actions[action]) {
-      throw new Error(`The action "${action}" doesn't exists on the reducer "${reducerName}"`);
+    let [actionKind, propName] = action.replace(reActions, '$1_').split('_');
+
+    if (!propName) {
+      throw new Error(`The action must be prefixed by its kind. Got "${action}"`);
     }
 
-    const _action = { reducer, reducerName, name: action };
+    propName = _.lowerFirst(propName);
 
-    tempActions[action] = createDispatch(states, _action, dispatch, store);
+    if (!states[reducer].actions[propName]) {
+      throw new Error(`The action "${propName}" doesn't exists on the reducer "${reducerName}"`);
+    }
+
+    const _action = { reducer, reducerName, name: action, kind: actionKind, propName: propName };
+
+    createDispatch(states, _action, dispatch, tempActions);
   });
 }
 
@@ -76,7 +81,7 @@ const mapString = (_actions, dispatch, tempActions, states, store) => {
  * @param {Object} tempActions
  * @param {Object} states
  */
-const mapObject = (reducers, dispatch, tempActions, states, store) => {
+const mapObject = (reducers, dispatch, tempActions, states) => {
   _.forIn(reducers, (actions, reducerName) => {
     let actionList = reducerName + ': ';
 
@@ -88,7 +93,7 @@ const mapObject = (reducers, dispatch, tempActions, states, store) => {
       throw new Error(`The actions must be either an array or a string. Got "${actions}"`);
     }
 
-    mapString(actionList, dispatch, tempActions, states, store);
+    mapString(actionList, dispatch, tempActions, states);
   });
 }
 
@@ -111,7 +116,7 @@ export function mapDynamicDispatch(actions) {
       throw new Error(`The actions must be either a string or an object. Got "${actions}"`);
     }
 
-    mapper(actions, dispatch, tempActions, mapDynamicDispatch.states, mapDynamicDispatch.store);
+    mapper(actions, dispatch, tempActions, mapDynamicDispatch.states);
 
     return tempActions;
   }
