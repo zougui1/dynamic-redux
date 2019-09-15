@@ -14,7 +14,7 @@ exampleState.createActions({
   // note that `set` can be used with all types
   myProperty: 'set',
   // but there is more actions that are more "advanced" and useful
-  // what if we wanted to merge an object in the state with another object
+  // what if you wanted to merge an object in the state with another object
   // either to add new properties to the said object
   // or the modify the existing ones
   // simply set the value as 'merge' to be able to merge
@@ -23,8 +23,8 @@ exampleState.createActions({
   // and the value passed in argument aren't an object
   myObject: 'merge',
   // there is more useful actions for arrays
-  // since there is more than one that we would like to use
-  // we can set an array of strings to define them
+  // since there is more than one that you would like to use
+  // you can set an array of strings to define them
   myArray: [
     // has the same effect as the native `push` function
     // will throw an error if the value in the state isn't an array
@@ -55,17 +55,17 @@ exampleState.createActions({
     // and the value passed in argument isn't a function
     'reduce',
   ],
-  // we can increment and decrement a number as well
+  // you can increment and decrement a number as well
   // they will throw an error if both the value in the state
   // and the value passed in argument aren't a number
   myNumber: [
     'inc',
     'dec',
-    // we can also reset a property which will set it to its value from the initial state
+    // you can also reset a property which will set it to its value from the initial state
     'reset'
   ],
 
-  // we can reset the whole state as well, which will set the initial state
+  // you can reset the whole state as well, which will set the initial state
   // this can be done by simply referencing the current state with `__STATE__`
   // and set the reset action
   //! only `reset` can be used on the state. if you try another action

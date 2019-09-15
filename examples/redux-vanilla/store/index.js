@@ -4,7 +4,7 @@ import rootReducer from './reducers';
 
 let devTools = [];
 
-// push the redux dev tools in the `devTools` array if we are not in production
+// push the redux dev tools in the `devTools` array if you are not in production
 // and if the `__REDUX_DEVTOOLS_EXTENSION__` property exists on object window
 if(window.__REDUX_DEVTOOLS_EXTENSION__ && process.env.NODE_ENV !== 'production') {
   devTools.push(window.__REDUX_DEVTOOLS_EXTENSION__({ trace: true }));
