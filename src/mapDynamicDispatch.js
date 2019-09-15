@@ -51,8 +51,8 @@ const mapString = (_actions, dispatch, tempActions, states) => {
       throw new Error(`The reducer "${reducerName}" doesn't exists`);
     }
 
-    if (action === 'resetReducer') {
-      tempActions[action] = () => dispatch(states[reducer].actions[action].reset());
+    if (action === 'resetState') {
+      tempActions['reset' + _.upperFirst(reducerName) + 'State'] = () => dispatch(states[reducer].actions['__STATE__'].reset());
       return;
     }
 
@@ -65,7 +65,7 @@ const mapString = (_actions, dispatch, tempActions, states) => {
     propName = _.lowerFirst(propName);
 
     if (!states[reducer].actions[propName]) {
-      throw new Error(`The action "${propName}" doesn't exists on the reducer "${reducerName}"`);
+      throw new Error(`The action "${propName}" doesn't exists on state "${reducerName}"`);
     }
 
     const _action = { reducer, reducerName, name: action, kind: actionKind, propName: propName };
@@ -101,8 +101,7 @@ export function mapDynamicDispatch(actions) {
   return dispatch => {
 
     if (!actions) {
-      console.warn('The wanted actions are not specified');
-      return {};
+      throw new Error('The actions must be specified');
     }
 
     const tempActions = {};

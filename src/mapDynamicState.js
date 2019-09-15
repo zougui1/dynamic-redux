@@ -53,8 +53,7 @@ export function mapDynamicState(props) {
   return state => {
 
     if (!props) {
-      console.warn('The wanted props are not specified');
-      return {};
+      throw new Error('The props must be specified');
     }
 
     const newState = {};

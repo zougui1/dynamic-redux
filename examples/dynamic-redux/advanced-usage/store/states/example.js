@@ -58,7 +58,20 @@ exampleState.createActions({
   // we can increment and decrement a number as well
   // they will throw an error if both the value in the state
   // and the value passed in argument aren't a number
-  myNumber: ['inc', 'dec']
+  myNumber: [
+    'inc',
+    'dec',
+    // we can also reset a property which will set it to its value from the initial state
+    'reset'
+  ],
+
+  // we can reset the whole state as well, which will set the initial state
+  // this can be done by simply referencing the current state with `__STATE__`
+  // and set the reset action
+  //! only `reset` can be used on the state. if you try another action
+  //! it will throw the following error: "state" doesn't exists on state "<stateName>"
+  __STATE__: 'reset'
+
 });
 
 export default exampleState;

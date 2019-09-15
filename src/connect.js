@@ -26,13 +26,11 @@ try {
  * @returns {Function | undefined}
  */
 const getMap = (map, mapper) => {
-  if (_.isFunction(map)) {
-    return map;
-  } else if (_.isString(map) || _.isObject(map)) {
+  if (_.isString(map) || _.isObject(map)) {
     return mapper(map);
   }
 
-  return null;
+  return map;
 }
 
 /**

@@ -1,6 +1,8 @@
 import _ from 'lodash';
 import { Actions } from './Actions';
 
+const stateRef = '__STATE__';
+
 export class DynamicState {
 
   /**
@@ -54,7 +56,7 @@ export class DynamicState {
     }
 
     this.name = name;
-    this.resetType = 'RESET_' + name.toUpperCase() + '_REDUCER';
+    this.resetType = 'RESET_' + name.toUpperCase() + '_STATE';
     this.initialState = initialState;
     this.reducer = (state = initialState, action) => this.dynamicReducer(state, action);
   }
@@ -110,6 +112,9 @@ export class DynamicState {
       case 'dec':
         state[prop] = Actions.numberWithNumber(state, action, prop);
         break;
+      case 'reset':
+        state[prop] = this.initialState[prop];
+        break;
 
       default:
         break;
@@ -143,9 +148,16 @@ export class DynamicState {
    * @private
    */
   actionCreator = action => {
-    const type = action.kind === 'reset'
-      ? this.resetType
-      : action.kind.toUpperCase() + '_' + _.snakeCase(action.name).toUpperCase();
+    let finalName;
+
+    if (action.name === stateRef) {
+      finalName = this.name.toUpperCase() + '_STATE';
+    } else {
+      finalName = _.snakeCase(action.name).toUpperCase();
+    }
+
+    const type = action.kind.toUpperCase() + '_' + finalName;
+    console.log(type);
 
     this.reducerConditions.push({ type, prop: action.prop });
 
@@ -156,12 +168,14 @@ export class DynamicState {
    * @param {Object} _actions
    * @public
    */
-  createReducer (_actions) {
+  createActions (_actions) {
 
     _.forIn(_actions, (action, actionName) => {
-      const prop = _.camelCase(actionName);
+      const isStateRef = actionName === stateRef;
 
-      if (prop !== 'resetReducer' && !_.hasIn(this.initialState, prop)) {
+      const prop = isStateRef ? actionName : _.camelCase(actionName);
+
+      if (!isStateRef && !_.hasIn(this.initialState, prop)) {
         throw new Error(`"${prop}" doesn't exists in the state of "${this.name}"`);
       }
 
