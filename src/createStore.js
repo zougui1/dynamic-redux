@@ -25,7 +25,7 @@ export const createStore = (reducer, middlewares) => {
   let enhancers;
   let devTools = [];
 
-  if(window.devToolsExtension && process.env.NODE_ENV !== 'production') {
+  if(window.__REDUX_DEVTOOLS_EXTENSION__ && process.env.NODE_ENV !== 'production') {
     devTools.push(window.__REDUX_DEVTOOLS_EXTENSION__({ trace: true }));
   }
 
