@@ -1,12 +1,15 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { mapDynamicState, mapDynamicDispatch } from 'dynamic-redux';
+// dynamic-redux also have a `connect` function
+// that is a simple layer over the redux one
+// that will use mapDynamicState and mapDynamicDispatch behind
+// if you don't use them here
+import { connect } from 'dynamic-redux';
 
 // no longer need to import the action creators
 
-const mapStateToPropsFromString = mapDynamicState('example: myProperty');
+const mapStateToProps = 'example: myProperty';
 
-const mapDispatchToProps = mapDynamicDispatch({
+const mapDispatchToProps = {
   example: [
     // get the actions of `myProperty`
     'setMyProperty',
@@ -17,7 +20,7 @@ const mapDispatchToProps = mapDynamicDispatch({
     // get the action of `myNumber`
     'incMyNumber decMyNumber'
   ],
-});
+};
 
 // works exactly the same as redux vanilla
 const StoreProvidedComponent = ({
@@ -66,4 +69,4 @@ const StoreProvidedComponent = ({
   return <p>myProperty: {myProperty}</p>
 };
 
-export default connect(mapStateToPropsFromString, mapDispatchToProps)(StoreProvidedComponent);
+export default connect(mapStateToProps, mapDispatchToProps)(StoreProvidedComponent);
