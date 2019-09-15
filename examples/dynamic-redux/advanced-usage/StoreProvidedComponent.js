@@ -18,7 +18,11 @@ const mapDispatchToProps = {
     // get the actions of `myObject`
     'mergeMyObject',
     // get the action of `myNumber`
-    'incMyNumber decMyNumber'
+    'incMyNumber decMyNumber resetMyNumber',
+    // it is unecessary to specify the name of the state that you want
+    // to reset, it will automatically detect the right state
+    // and add the state's name in the resulting function
+    'resetState'
   ],
 };
 
@@ -36,7 +40,10 @@ const StoreProvidedComponent = ({
   reduceMyArray,
   mergeMyObject,
   incMyNumber,
-  decMyNumber
+  decMyNumber,
+  resetMyNumber,
+  // the name of the state to reset has been automatically added to the resulting function
+  resetExampleState
 }) => {
   // replace the old value with this one
   setMyProperty('new value');
@@ -65,6 +72,11 @@ const StoreProvidedComponent = ({
   incMyNumber(1); // increment by 1
   // decrement the number in the state
   decMyNumber(5); // decrement by 5
+  // reset the number to its default value
+  resetMyNumber();
+
+  // reset the whole state of `example` to its default value
+  resetExampleState();
 
   return <p>myProperty: {myProperty}</p>
 };
