@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import {
   createStore as rCreateStore,
   applyMiddleware,
@@ -33,6 +34,10 @@ export const createStore = (reducer, middlewares) => {
   }
 
   const store = rCreateStore(reducer.combinedReducers, enhancers);
+
+  _.forIn(reducer.states, state => {
+    state.store = store;
+  });
 
   return store;
 }

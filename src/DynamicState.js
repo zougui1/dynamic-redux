@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import { Actions } from './Actions';
+import { chainer } from './middlewareChainer';
 
 const stateRef = '__STATE__';
 
@@ -24,6 +25,12 @@ export class DynamicState {
   actions = {};
 
   /**
+   * @property {Object} actionsOrigin
+   * @public
+   */
+  actionsOrigin = {};
+
+  /**
    * @property {Array} reducerConditions
    * @private
    */
@@ -41,6 +48,18 @@ export class DynamicState {
    * @private
    */
   resetType = '';
+
+  /**
+   * @property {Object} middlewares
+   * @private
+   */
+  middlewares = {};
+
+  /**
+   * @property {Object} store
+   * @private
+   */
+  store = {};
 
   /**
    * @param {String} name
@@ -157,18 +176,33 @@ export class DynamicState {
     }
 
     const type = action.kind.toUpperCase() + '_' + finalName;
-    console.log(type);
+    const camelType = _.camelCase(type);
 
     this.reducerConditions.push({ type, prop: action.prop });
 
-    return value => ({ type, payload: value, kind: action.kind });
+    return (value, dispatch) => {
+      // get all the middlewares for the current action
+      const middlewares = this.getActionMiddlewares(camelType);
+
+      const actionObject = { type, payload: value, kind: action.kind };
+      // create a function that will dispatch the data of the action
+      const dispatcher = () => dispatch(actionObject);
+
+      if (middlewares) {
+        // create a chain of middlewares and call them
+        chainer(middlewares, this.store, dispatcher, actionObject)();
+      } else {
+        dispatcher();
+      }
+    }
   }
 
   /**
    * @param {Object} _actions
    * @public
    */
-  createActions (_actions) {
+  createActions(_actions) {
+    this.actionsOrigin = _actions;
 
     _.forIn(_actions, (action, actionName) => {
       const isStateRef = actionName === stateRef;
@@ -187,6 +221,60 @@ export class DynamicState {
 
       this.createAction({ name: actionName, kinds: action, prop: prop });
     });
+  }
+
+  /**
+   *
+   * @param {Object[]} middlewares
+   * @param {String} middlewares[].actionName
+   * @param {String} middlewares[].actionKind
+   * @param {Function} middlewares[].callbackAction
+   */
+  createMiddlewares(middlewares) {
+    middlewares.forEach(middleware => {
+      const { actionName, actionKind } = middleware;
+
+      let action = this.actionsOrigin[actionName];
+
+      if (!action) {
+        throw new Error(`There is no action "${actionName}"`);
+      }
+
+      if (_.isString(action)) {
+        action = [action];
+      }
+
+      if (!action.includes(actionKind)) {
+        throw new Error(`Action "${actionName}" doesn't use the kind "${actionKind}"`);
+      }
+
+      this.addMiddleware(middleware);
+    });
+  }
+
+  /**
+   *
+   * @param {Object} middleware
+   * @param {String} middleware.actionName
+   * @param {String} middleware.actionKind
+   * @param {Function} middleware.callbackAction
+   */
+  addMiddleware = middleware => {
+    const action = _.camelCase(middleware.actionKind + '_' + middleware.actionName);
+
+    if (!this.middlewares[action]) {
+      this.middlewares[action] = [middleware];
+    } else {
+      this.middlewares[action].push(middleware);
+    }
+  }
+
+  /**
+   * @param {String} action
+   * @returns {Object}
+   */
+  getActionMiddlewares = action => {
+    return this.middlewares[action];
   }
 
 }

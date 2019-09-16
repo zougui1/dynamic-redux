@@ -21,7 +21,7 @@ const createDispatch = (states, action, dispatch, tempActions) => {
   _.forIn(actions, (actionCreator, name) => {
     if (name === action.kind) {
       tempActions[action.name] = arg => {
-        return dispatch(actionCreator(arg));
+        return actionCreator(arg, dispatch);
       }
     }
   });
@@ -52,7 +52,7 @@ const mapString = (_actions, dispatch, tempActions, states) => {
     }
 
     if (action === 'resetState') {
-      tempActions['reset' + _.upperFirst(reducerName) + 'State'] = () => dispatch(states[reducer].actions['__STATE__'].reset());
+      tempActions['reset' + _.upperFirst(reducerName) + 'State'] = () => states[reducer].actions['__STATE__'].reset(null, dispatch);
       return;
     }
 
