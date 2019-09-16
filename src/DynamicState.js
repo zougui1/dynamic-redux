@@ -182,7 +182,7 @@ export class DynamicState {
 
     return (value, dispatch) => {
       // get all the middlewares for the current action
-      const middlewares = this.getActionMiddlewares(camelType);
+      const middlewares = this.middlewares[camelType];
 
       const actionObject = { type, payload: value, kind: action.kind };
       // create a function that will dispatch the data of the action
@@ -267,14 +267,6 @@ export class DynamicState {
     } else {
       this.middlewares[action].push(middleware);
     }
-  }
-
-  /**
-   * @param {String} action
-   * @returns {Object}
-   */
-  getActionMiddlewares = action => {
-    return this.middlewares[action];
   }
 
 }
