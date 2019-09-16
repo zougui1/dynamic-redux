@@ -1,4 +1,5 @@
 import { DynamicState } from 'dynamic-redux';
+import { Middleware } from '../../../../../src/Middleware';
 
 const exampleState = new DynamicState('example', {
   myProperty: 'default value',
@@ -73,5 +74,29 @@ exampleState.createActions({
   __STATE__: 'reset'
 
 });
+
+// create middlewares from an array of `Middleware`
+state.createMiddlewares([
+  // first param target the name of the action
+  // if there is no action with the same name it will throw an error
+  // second param target the kind of action
+  // if the action doesn't use the same kind it will throw an error
+  //! a middleware can't be used on '__STATE__' this will not throw an error but won't work either
+  new Middleware('myNumber', 'inc')
+    // `.callback` will take the function to use as a middleware
+    // `store` is the redux store
+    // `next` is a function to call if you want the next middleware
+    // or the action to be called if there is no middleware after
+    // `action` is an object containing the data about the current action
+    .callback(store => next => action => {
+      // the other middlewares (if any) and the final action will be called
+      // if the value passed to the action is superior to 0
+      // otherwise the next middlewares (if any) and final action
+      // won't be called and the increment won't occur
+      if (action.payload > 0) {
+        next();
+      }
+    })
+]);
 
 export default exampleState;
