@@ -1,11 +1,11 @@
 import _ from 'lodash';
 import {
-  createStore as rCreateStore,
+  createStore as createReduxStore,
   applyMiddleware,
   compose
 } from 'redux';
 
-import { mapDynamicDispatch } from '.';
+import { mapDynamicDispatch, mapDynamicState } from '.';
 
 /**
  *
@@ -17,24 +17,29 @@ export const createStore = (reducer, middlewares) => {
     throw new Error(`Middlewares (if any) must be in an array. Got "${middlewares}"`);
   }
 
+  // set the states into the mappers
   mapDynamicDispatch.states = reducer.states;
+  mapDynamicState.states = reducer.states;
 
   let enhancers;
-  const devTools = [];
-  const window = {};
+  let devTools;
+  const window = {}; //! used only for dev and tests
 
+  // add the devtools if not in production
   if(window.__REDUX_DEVTOOLS_EXTENSION__ && process.env.NODE_ENV !== 'production') {
-    devTools.push(window.__REDUX_DEVTOOLS_EXTENSION__({ trace: true }));
+    devTools = window.__REDUX_DEVTOOLS_EXTENSION__({ trace: true });
   }
 
+  // create enhancers with middlewares (if any) and devtools
   if (middlewares) {
-    enhancers = compose(applyMiddleware(...middlewares), ...devTools);
+    enhancers = compose(applyMiddleware(...middlewares), devTools);
   } else {
-    enhancers = devTools[0];
+    enhancers = devTools;
   }
 
-  const store = rCreateStore(reducer.combinedReducers, enhancers);
+  const store = createReduxStore(reducer.combinedReducers, enhancers);
 
+  // used for the local middlewares
   _.forIn(reducer.states, state => {
     state.store = store;
   });

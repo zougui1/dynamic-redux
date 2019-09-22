@@ -19,6 +19,13 @@ export class DynamicState {
   initialState = {};
 
   /**
+   * model of the state, containing the type of the properties in the state
+   * @property {Object} stateModel
+   * @private
+   */
+  stateModel = {};
+
+  /**
    * @property {Object} actions
    * @public
    */
@@ -62,10 +69,23 @@ export class DynamicState {
   store = {};
 
   /**
+   * @property {Object} store
+   * @private
+   */
+  selectors = {};
+
+  /**
+   * @property {Object} options
+   * @private
+   */
+  options = {};
+
+  /**
    * @param {String} name
    * @param {Object} initialState
+   * @param {Object} options
    */
-  constructor(name, initialState) {
+  constructor(name, initialState, options = {}) {
     if (!_.isString(name)) {
       throw new Error(`The name must be a string. Got "${name}"`);
     }
@@ -75,9 +95,11 @@ export class DynamicState {
     }
 
     this.name = name;
+    this.options = options;
     this.resetType = 'RESET_' + name.toUpperCase() + '_STATE';
     this.initialState = initialState;
     this.reducer = (state = initialState, action) => this.dynamicReducer(state, action);
+    this.generateStateModel();
   }
 
   /**
@@ -105,10 +127,31 @@ export class DynamicState {
     return newState;
   }
 
+  /**
+   * generate a model of the state to know the type of its properties
+   */
+  generateStateModel = () => {
+    _.forIn(this.initialState, (property, name) => {
+      let type = typeof property;
+
+      if (Array.isArray(property)) {
+        type = 'array';
+      }
+
+      this.stateModel[name] = type;
+    });
+  }
+
+  /**
+   * @param {Object} state
+   * @param {Object} action
+   * @param {String} prop
+   * @private
+   */
   dispatcher = (state, action, prop) => {
     switch (action.kind) {
       case 'set':
-        state[prop] = action.payload;
+        this.setter(state, prop, action.payload);
         break;
       case 'push':
       case 'pop':
@@ -117,19 +160,19 @@ export class DynamicState {
         Actions.array(state, action, prop);
         break;
       case 'concat':
-        state[prop] = Actions.arrayWithArray(state, action, prop);
+        this.setter(state, prop, Actions.arrayWithArray(state, action, prop));
         break;
       case 'filter':
       case 'map':
       case 'reduce':
-        state[prop] = Actions.arrayWithFunction(state, action, prop);
+        this.setter(state, prop, Actions.arrayWithFunction(state, action, prop));
         break;
       case 'merge':
-        state[prop] = Actions.objectWithObject(state, action, prop);
+        this.setter(state, prop, Actions.objectWithObject(state, action, prop));
         break;
       case 'inc':
       case 'dec':
-        state[prop] = Actions.numberWithNumber(state, action, prop);
+        this.setter(state, prop, Actions.numberWithNumber(state, action, prop));
         break;
       case 'reset':
         state[prop] = this.initialState[prop];
@@ -138,6 +181,80 @@ export class DynamicState {
       default:
         break;
     }
+  }
+
+  /**
+   * set the value in the property of the state with or without strict typing depending on the options
+   * @param {Object} state
+   * @param {String} prop
+   * @param {*} value
+   * @private
+   */
+  setter = (state, prop, value) => {
+    if (this.options.strictTyping) {
+      this.typedSetter(state, prop, value);
+    } else {
+      this.basicSetter(state, prop, value);
+    }
+  }
+
+  /**
+   * set the value in the property of the state without a strict typing
+   * @param {Object} state
+   * @param {String} prop
+   * @param {*} value
+   * @private
+   */
+  basicSetter = (state, prop, value) => {
+    state[prop] = value;
+  }
+
+  /**
+   * set the value in the property of the state with a strict typing
+   * @param {Object} state
+   * @param {String} prop
+   * @param {*} value
+   * @private
+   */
+  typedSetter = (state, prop, value) => {
+    const expectedType = this.stateModel[prop];
+    const expectArray = expectedType === 'array';
+    const isValArray = Array.isArray(value);
+
+    // check if the value is an array if it expects it to be
+    const isArray = expectArray && isValArray;
+    // if an array is expected give the result of `isArray` otherwise
+    // give the result of the test between the type of the value and the type expected
+    const isCorrectType = isArray || this.getType(value) === expectedType;
+
+    // set the property if the type is correct otherwise throw an error
+    if (isCorrectType) {
+      this.basicSetter(state, prop, value);
+    } else {
+      let errorValue = value;
+
+      // if the value is an array set the error value a tag saying explicitely it's an array
+      // otherwise it will make no distinction and say it's an object
+      if (isValArray) {
+        errorValue = '[array Array]';
+      }
+
+      throw new Error(`"${prop}" must be of type "${expectedType}". Got "${errorValue}"`);
+    }
+  }
+
+  /**
+   * get the type of a value, works the same as `typeof` except that it will
+   * return `'array'` if the value is an array
+   * @param {*} value
+   * @returns {String}
+   * @private
+   */
+  getType = value => {
+    if (Array.isArray(value)) {
+      return 'array';
+    }
+    return typeof value;
   }
 
   /**
@@ -199,6 +316,7 @@ export class DynamicState {
 
   /**
    * @param {Object} _actions
+   * @returns {this}
    * @public
    */
   createActions(_actions) {
@@ -209,7 +327,7 @@ export class DynamicState {
 
       const prop = isStateRef ? actionName : _.camelCase(actionName);
 
-      if (!isStateRef && !_.hasIn(this.initialState, prop)) {
+      if (!isStateRef && !this.isInState(prop)) {
         throw new Error(`"${prop}" doesn't exists in the state of "${this.name}"`);
       }
 
@@ -221,6 +339,8 @@ export class DynamicState {
 
       this.createAction({ name: actionName, kinds: action, prop: prop });
     });
+
+    return this;
   }
 
   /**
@@ -258,6 +378,7 @@ export class DynamicState {
    * @param {String} middleware.actionName
    * @param {String} middleware.actionKind
    * @param {Function} middleware.callbackAction
+   * @public
    */
   addMiddleware = middleware => {
     const action = _.camelCase(middleware.actionKind + '_' + middleware.actionName);
@@ -269,4 +390,36 @@ export class DynamicState {
     }
   }
 
+  /**
+   * create selectors
+   * @param {Object} selectors
+   * @public
+   */
+  createSelectors = selectors => {
+    if (!_.isObject(selectors)) {
+      throw new Error(`Selectors must be in an object. Got "${selectors}"`);
+    }
+
+    _.forIn(selectors, (selector, name) => {
+      if (!_.isFunction(selector)) {
+        throw new Error(`Selectors must be a function. Got "${selector}" with name "${name}"`);
+      }
+
+      this.selectors[name] = selector;
+    });
+  }
+
+  /**
+   * return whether or not a prop is in the state
+   * @param {String} prop
+   * @returns {Boolean}
+   */
+  isInState = prop => _.hasIn(this.initialState, prop);
+
+  /**
+   * return whether or not a prop is a selector
+   * @param {String} prop
+   * @returns {Boolean}
+   */
+  isSelector = prop => _.hasIn(this.selectors, prop);
 }

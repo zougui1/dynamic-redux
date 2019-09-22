@@ -83,16 +83,45 @@ const numberAction = baseAction(validatePropNumber);
 export class Actions {
 
   // actions for arrays
+  /**
+   * @param {Object} state
+   * @param {Object} action
+   * @param {String} prop
+   */
   static array = arrayAction(null, nativeFunction);
+  /**
+   * @param {Object} state
+   * @param {Object} action
+   * @param {String} prop
+   * @returns {Array}
+   */
   static arrayWithArray = arrayAction(validateArray, nativeFunction);
+  /**
+   * @param {Object} state
+   * @param {Object} action
+   * @param {String} prop
+   * @returns {Array}
+   */
   static arrayWithFunction = arrayAction(validateFunction, nativeFunction);
 
   // actions for objects
+  /**
+   * @param {Object} state
+   * @param {Object} action
+   * @param {String} prop
+   * @returns {Object}
+   */
   static objectWithObject = objectAction(validateObject, (state, action, prop) => {
     return state[prop] = _.merge(state[prop], action.payload);
   });
 
   // actions for numbers
+  /**
+   * @param {Object} state
+   * @param {Object} action
+   * @param {String} prop
+   * @returns {Number}
+   */
   static numberWithNumber = numberAction(validateNumber, (state, action, prop) => {
     switch (action.kind) {
       case 'inc':
