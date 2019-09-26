@@ -164,7 +164,6 @@ export class DynamicState {
         break;
       case 'filter':
       case 'map':
-      case 'reduce':
         this.setter(state, prop, Actions.arrayWithFunction(state, action, prop));
         break;
       case 'merge':
@@ -373,7 +372,7 @@ export class DynamicState {
   }
 
   /**
-   *
+   * associate a middleware to an action
    * @param {Object} middleware
    * @param {String} middleware.actionName
    * @param {String} middleware.actionKind

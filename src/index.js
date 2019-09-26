@@ -1,5 +1,5 @@
-export * from './mapDynamicState';
-export * from './mapDynamicDispatch';
+export * from './mapState';
+export * from './mapDispatch';
 export * from './createStore';
 export * from './DynamicState';
 export * from './CombineStates';
@@ -9,8 +9,8 @@ export * from './connect';
 import { DynamicState } from './DynamicState';
 import { CombineStates } from './CombineStates';
 import { createStore } from './createStore';
-import { mapDynamicDispatch } from './mapDynamicDispatch';
-import { mapDynamicState } from './mapDynamicState';
+import { mapDispatch } from './mapDispatch';
+import { mapState } from './mapState';
 import { Middleware } from './Middleware';
 
 const state = new DynamicState('state', {
@@ -19,6 +19,7 @@ const state = new DynamicState('state', {
 }, { strictTyping: true });
 
 state.createActions({
+  array: ['map', 'filter'],
   test: ['set', 'reset'],
   __STATE__: 'reset'
 });
@@ -38,12 +39,15 @@ const combinedStates = new CombineStates([state]);
 
 const store = createStore(combinedStates);
 
-const actions = mapDynamicDispatch('state: resetState resetTest setTest')(store.dispatch);
+const actions = mapDispatch('state: resetState resetTest setTest')(store.dispatch);
 
-const getter = () => mapDynamicState('state: test array4AndMore')(store.getState());
+const getter = () => mapState('state: array test array4AndMore something')(store.getState());
 
-console.log(getter().array4AndMoreSelector());
-actions.setTest(50);
+console.log(getter());
+actions.setTest(10);
+const got = getter();
+got.test = 100;
+console.log(got);
 console.log(getter());
 //actions.resetTest();
 //console.log(getter());

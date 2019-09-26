@@ -69,6 +69,7 @@ const baseAction = validatePropType => (validateType, callback) => (state, actio
 
 // action template for arrays
 const arrayAction = baseAction(validatePropArray);
+
 // function using native functions with data of the action
 const nativeFunction = (state, action, prop) => {
   return state[prop][action.kind](action.payload);
@@ -89,6 +90,7 @@ export class Actions {
    * @param {String} prop
    */
   static array = arrayAction(null, nativeFunction);
+
   /**
    * @param {Object} state
    * @param {Object} action
@@ -96,6 +98,7 @@ export class Actions {
    * @returns {Array}
    */
   static arrayWithArray = arrayAction(validateArray, nativeFunction);
+
   /**
    * @param {Object} state
    * @param {Object} action

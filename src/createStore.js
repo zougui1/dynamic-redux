@@ -5,21 +5,36 @@ import {
   compose
 } from 'redux';
 
-import { mapDynamicDispatch, mapDynamicState } from '.';
+import { mapDispatch, mapState } from '.';
+
+const defaultOptions = {
+  selectors: {
+    something: state => console.log(state)
+  },
+  middlewares: null
+};
 
 /**
  *
  * @param {Object} reducer
- * @param {Array?} middlewares
+ * @param {Object} [options={}]
  */
-export const createStore = (reducer, middlewares) => {
+export const createStore = (reducer, options = defaultOptions) => {
+  const { middlewares, selectors } = options;
+
   if (middlewares && !Array.isArray(middlewares)) {
     throw new Error(`Middlewares (if any) must be in an array. Got "${middlewares}"`);
   }
 
+  if (!_.isObject(selectors)) {
+    throw new Error(`Selectors (if any) must be in an object. Got "${selectors}"`);
+  }
+
   // set the states into the mappers
-  mapDynamicDispatch.states = reducer.states;
-  mapDynamicState.states = reducer.states;
+  mapDispatch.states = reducer.states;
+  mapState.states = reducer.states;
+  //TODO create a `global` state for stuff such as the global selectors
+  mapState.selectors = selectors;
 
   let enhancers;
   let devTools;
