@@ -1,6 +1,6 @@
 import _ from 'lodash';
-import { Actions } from './Actions';
-import { chainer } from './middlewareChainer';
+import { Actions } from './_Actions';
+import { chainer } from './_middlewareChainer';
 
 const stateRef = '__STATE__';
 

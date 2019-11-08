@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { removeSpaces } from '../utils';
+import { removeSpaces } from '../_utils';
 
 export class GenericMapper {
 
@@ -23,26 +23,18 @@ export class GenericMapper {
   reducer = {};
 
   /**
-   * @property {Function} publicMapper
-   * @private
-   */
-  publicMapper;
-
-  /**
    *
    * @param {string} props
-   * @param {Function} publicMapper
    * @param {Function} each
    * @public
    */
-  constructor(props, publicMapper, each) {
+  constructor(props, each) {
 
     if (!props) {
       throw new Error('The props must be specified');
     }
 
     this.dirtyProps = props;
-    this.publicMapper = publicMapper;
     this.each = each;
 
     if (_.isString(props)) {
@@ -56,9 +48,10 @@ export class GenericMapper {
 
   /**
    * map the string `this.props`
+   * @param {string} [dirtyProps=this.dirtyProps]
    */
-  mapString = () => {
-    this.cleanProps();
+  mapString = (dirtyProps = this.dirtyProps) => {
+    this.cleanProps(dirtyProps);
 
     // it's up to the user to handle the datas
     this.props.forEach(this.each(this));
@@ -97,7 +90,7 @@ export class GenericMapper {
 
   /**
    * transform the `dirtyProps` into usable data
-   * @param {string} dirtyProps
+   * @param {string} [dirtyProps=this.dirtyProps]
    * @private
    */
   cleanProps = (dirtyProps = this.dirtyProps) => {

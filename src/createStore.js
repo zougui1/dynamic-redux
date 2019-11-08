@@ -5,12 +5,10 @@ import {
   compose
 } from 'redux';
 
-import { mapDispatch, mapState } from '.';
+import { mappersData } from './Mappers';
 
 const defaultOptions = {
-  selectors: {
-    something: state => console.log(state)
-  },
+  selectors: {},
   middlewares: null
 };
 
@@ -31,14 +29,13 @@ export const createStore = (reducer, options = defaultOptions) => {
   }
 
   // set the states into the mappers
-  mapDispatch.states = reducer.states;
-  mapState.states = reducer.states;
+  mappersData.states = reducer.states;
   //TODO create a `global` state for stuff such as the global selectors
-  mapState.selectors = selectors;
+  mappersData.selectors = selectors;
 
   let enhancers;
   let devTools;
-  const window = {}; //! used only for dev and tests
+  //const window = {}; //! used only for dev and tests
 
   // add the devtools if not in production
   if(window.__REDUX_DEVTOOLS_EXTENSION__ && process.env.NODE_ENV !== 'production') {

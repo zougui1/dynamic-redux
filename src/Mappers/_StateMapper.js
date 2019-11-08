@@ -1,8 +1,7 @@
 import _ from 'lodash';
 
 import { GenericMapper } from './_GenericMapper';
-
-const suffix = 'Reducer';
+import { mappersData } from './_mappersData';
 
 export class StateMapper {
 
@@ -36,12 +35,11 @@ export class StateMapper {
    *
    * @param {string} props
    * @param {Object} state
-   * @param {Function} publicMapper
    * @public
    */
-  constructor(props, state, publicMapper) {
+  constructor(props, state) {
     this.state = state;
-    this.mapper = new GenericMapper(props, publicMapper, this.each);
+    this.mapper = new GenericMapper(props, this.each);
   }
 
   /**
@@ -50,10 +48,9 @@ export class StateMapper {
    */
   each = thisArg => {
     const { name, suffixed } = thisArg.reducer;
-    const { states, selectors } = thisArg.publicMapper;
 
     const stateReducer = this.state[suffixed];
-    const currentState = states[suffixed];
+    const currentState = mappersData.states[suffixed];
 
     if (!stateReducer) {
       throw new Error(`The state "${name}" doesn't exists`);
@@ -64,7 +61,7 @@ export class StateMapper {
 
       const isInState = currentState.isInState(prop);
       const isSelector = currentState.isSelector(prop);
-      const globalSelector = selectors[prop];
+      const globalSelector = mappersData.selectors[prop];
 
       if (!isInState && !isSelector && !globalSelector) {
         throw new Error(`There is no prop or selector called "${prop}" in the state "${name}"`);
@@ -78,23 +75,8 @@ export class StateMapper {
       this.newState[propName] = isInState
         ? stateReducer[prop]
         : globalSelector
-          ? (...args) => selectors[prop](this.unsuffixedState(), ...args)
+          ? (...args) => mappersData.selectors[prop](this.state, ...args)
           : (...args) => currentState.selectors[prop](stateReducer, ...args);
     }
   }
-
-  /**
-   * return the state with all its properties unsuffixed
-   * @returns {Object}
-   */
-  unsuffixedState = () => {
-    const newState = {};
-
-    _.forIn(this.state, (state, name) => {
-      newState[name.substring(0, name.length - suffix.length)] = state;
-    });
-
-    return newState;
-  }
-
 }

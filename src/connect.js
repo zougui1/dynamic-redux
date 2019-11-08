@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { mapDynamicState, mapDynamicDispatch } from '.';
+import { mapState, mapDispatch } from '.';
 
 let rConnect;
 let error;
@@ -44,8 +44,8 @@ export const connect = (_mapStateToProps, _mapDispatchToProps) => {
     throw error;
   }
 
-  const mapStateToProps = getMap(_mapStateToProps, mapDynamicState);
-  const mapDispatchToProps = getMap(_mapDispatchToProps, mapDynamicDispatch);
+  const mapStateToProps = getMap(_mapStateToProps, mapState);
+  const mapDispatchToProps = getMap(_mapDispatchToProps, mapDispatch);
 
   return rConnect(mapStateToProps, mapDispatchToProps);
 }

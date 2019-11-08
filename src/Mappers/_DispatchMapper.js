@@ -1,8 +1,9 @@
 import _ from 'lodash';
 
 import { GenericMapper } from './_GenericMapper';
+import { mappersData } from './_mappersData';
 
-const reActions = /(push|pop|shift|unshift|concat|set|merge|filter|map|inc|dec)/;
+const reActions = /^(push|pop|shift|unshift|concat|set|merge|filter|map|inc|dec)/;
 
 export class DispatchMapper {
 
@@ -37,12 +38,11 @@ export class DispatchMapper {
    *
    * @param {string} props
    * @param {Object} state
-   * @param {Function} publicMapper
    * @public
    */
-  constructor(props, dispatch, publicMapper) {
+  constructor(props, dispatch) {
     this.dispatch = dispatch;
-    this.mapper = new GenericMapper(props, publicMapper, this.each);
+    this.mapper = new GenericMapper(props, this.each);
   }
 
   /**
@@ -61,12 +61,9 @@ export class DispatchMapper {
 
     _.forIn(actions, (actionCreator, name) => {
       if (name === action.kind) {
-        tempActions[action.name] = arg => {
-          return actionCreator(arg, dispatch);
-        }
+        tempActions[action.name] = arg => actionCreator(arg, dispatch);
       }
     });
-
   }
 
   /**
@@ -75,13 +72,12 @@ export class DispatchMapper {
    */
   each = thisArg => {
     const { name, suffixed } = thisArg.reducer;
-    const { states } = thisArg.publicMapper;
 
-    if (!states[suffixed]) {
+    if (!mappersData.states[suffixed]) {
       throw new Error(`The reducer "${name}" doesn't exists`);
     }
 
-    const reducerActions = states[suffixed].actions;
+    const reducerActions = mappersData.states[suffixed].actions;
 
     return action => {
       if (action === 'resetState') {

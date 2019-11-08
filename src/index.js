@@ -6,6 +6,7 @@ export * from './CombineStates';
 export * from './Middleware';
 export * from './connect';
 
+/*
 import { DynamicState } from './DynamicState';
 import { CombineStates } from './CombineStates';
 import { createStore } from './createStore';
@@ -30,7 +31,7 @@ state.createMiddlewares([
     next();
   })
 ]);*/
-
+/*
 state.createSelectors({
   array4AndMore: state => state.array.filter(n => n >= 4),
 });
@@ -48,6 +49,6 @@ actions.setTest(10);
 const got = getter();
 got.test = 100;
 console.log(got);
-console.log(getter());
+console.log(getter());*/
 //actions.resetTest();
 //console.log(getter());
