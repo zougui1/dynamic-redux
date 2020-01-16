@@ -83,13 +83,13 @@ export class StateCreator<T extends object> {
    * @type {Partial<StateMiddlewares<T>>}
    * @private
    */
-  private middlewares: Partial<StateMiddlewares<T>>;
+  private middlewares: Partial<StateMiddlewares<T>> = {};
 
   /**
    * @type {StateSelectors<T>}
    * @public
    */
-  public selectors: StateSelectors<T>;
+  public selectors: StateSelectors<T> = {};
 
   /**
    * @type {Object}
@@ -315,7 +315,7 @@ export class StateCreator<T extends object> {
 
       if (middlewares) {
         // create a chain of middlewares that will call the dispatcher at the very end and call them
-        chainer(middlewares, GlobalScope.get().store, dispatcher, actionObject);
+        chainer(middlewares, GlobalScope.get().store, dispatcher, actionObject)();
       } else {
         dispatcher();
       }
@@ -384,7 +384,7 @@ export class StateCreator<T extends object> {
   addAction(actionName: string, actionKinds: string | string[]) {
     if (typeof actionKinds === 'string') {
       actionKinds = [actionKinds];
-    } else if(!Array.isArray(actionKinds)) {
+    } else if (!Array.isArray(actionKinds)) {
       throw new Error(`The kind of action must be a string or an array. Got "${actionKinds}"`);
     }
 

@@ -23,6 +23,7 @@ export const chainer = (middlewares: MiddlewareCreator[], store, dispatcher: () 
   // repeat the same operation with the next middleware
   const chain = chainer(_.tail(middlewares), store, dispatcher, action);
 
+  console.log(middleware)
   // @ts-ignore
   middleware(store)(chain)(action);
 };

@@ -27,6 +27,7 @@ export function State(nameOrOptions?: string | ObjectLiteral, maybeOptions?: Sta
     const globalScope = GlobalScope.get();
 
     globalScope.states[name] = new StateCreator(name, new target(), options)
-      .createActions(globalScope.actions[targetName]);
+      .createActions(globalScope.actions[targetName])
+      .createMiddlewares(globalScope.middlewares[targetName]);
   };
 }

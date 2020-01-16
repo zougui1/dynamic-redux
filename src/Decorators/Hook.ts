@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 
 import { MiddlewareCreator } from '../MiddlewareCreator';
-import { ObjectLiteral, GlobalScope } from 'src/common';
+import { ObjectLiteral, GlobalScope } from '../common';
 
 export function Hook(dirtyMiddlewares: any) {
   let middlewares: any[] = [];
@@ -29,10 +29,10 @@ export function Hook(dirtyMiddlewares: any) {
   return (target: ObjectLiteral, propertyName: string) => {
     const globalScope = GlobalScope.get();
     const stateName = _.lowerFirst(target.constructor.name);
-    const state = globalScope.states[stateName];
+    // const state = globalScope.states[stateName];
 
     for (const middleware of middlewares) {
-      state.addMiddleware(new MiddlewareCreator(propertyName, middleware.actionKind));
+      globalScope.addMiddleware(stateName, new MiddlewareCreator(propertyName, middleware.actionKind).handle(middleware.handler));
     }
   };
 }

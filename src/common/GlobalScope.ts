@@ -1,6 +1,7 @@
 import { ObjectOf, ObjectLiteral } from '.';
 import { StateCreator } from '../StateCreator';
 import { Selector } from './Selector';
+import { MiddlewareCreator } from './../MiddlewareCreator';
 
 export class GlobalScope {
 
@@ -20,6 +21,8 @@ export class GlobalScope {
   store;
 
   actions: any = {};
+
+  middlewares: ObjectOf<MiddlewareCreator[]> = {};
 
   private constructor() { }
 
@@ -49,5 +52,13 @@ export class GlobalScope {
     }
 
     stateActions[actionName] = stateActions[actionName].concat(actionKinds);
+  }
+
+  addMiddleware(stateName: string, middleware: MiddlewareCreator): void {
+    if (!this.middlewares[stateName]) {
+      this.middlewares[stateName] = [];
+    }
+
+    this.middlewares[stateName].push(middleware);
   }
 }

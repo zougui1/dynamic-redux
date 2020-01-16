@@ -38,7 +38,7 @@ export class MiddlewareCreator<T = any> {
    * @returns {this}
    * @public
    */
-  handle(callback: Middleware) {
+  handle = (callback: Middleware) => {
     this.handler = callback;
     return this;
   }
