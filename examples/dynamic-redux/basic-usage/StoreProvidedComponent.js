@@ -9,14 +9,14 @@ import { mapDynamicState, mapDynamicDispatch } from 'dynamic-redux';
 // the part before the colon is the name of the state
 // the part after the colon is the name(s) of the properties contained in the state
 // the properties' names must be separated by a whitespace
-const mapStateToPropsFromString = mapDynamicState('example: myProperty');
+const mapStateToPropsFromString = mapDynamicState('example: myProperty user');
 
 //! if object
 // the properties name is the name of the state
 // the value contained must be either a string or an array of string
 // that are the properties contained in the state
 const mapDispatchToPropsFromObject = mapDynamicState({
-  example: 'myProperty'
+  example: 'myProperty',
 });
 
 // `mapDynamicDispatch` works exactly the same as `mapDynamicState`

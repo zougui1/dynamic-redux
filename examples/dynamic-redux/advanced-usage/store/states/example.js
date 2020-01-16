@@ -8,6 +8,7 @@ const exampleState = new DynamicState('example', {
   myNumber: 0
 });
 
+
 // there is several kinds of actions
 exampleState.createActions({
   // the basic one is 'set', which only replace the value in the state
@@ -51,10 +52,6 @@ exampleState.createActions({
     // will throw an error if the value in the state isn't an array
     // and the value passed in argument isn't a function
     'map',
-    // has the same effect as the native `reduce` function
-    // will throw an error if the value in the state isn't an array
-    // and the value passed in argument isn't a function
-    'reduce',
   ],
   // you can increment and decrement a number as well
   // they will throw an error if both the value in the state

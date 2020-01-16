@@ -14,7 +14,7 @@ const mapDispatchToProps = {
     // get the actions of `myProperty`
     'setMyProperty',
     // get the actions of `myArray` (note that they do not need to be in the same string)
-    'pushMyArray popMyArray shiftMyArray unshiftMyArray concatMyArray filterMyArray mapMyArray reduceMyArray',
+    'pushMyArray popMyArray shiftMyArray unshiftMyArray concatMyArray filterMyArray mapMyArray',
     // get the actions of `myObject`
     'mergeMyObject',
     // get the action of `myNumber`
@@ -37,13 +37,12 @@ const StoreProvidedComponent = ({
   concatMyArray,
   filterMyArray,
   mapMyArray,
-  reduceMyArray,
   mergeMyObject,
   incMyNumber,
   decMyNumber,
   resetMyNumber,
   // the name of the state to reset has been automatically added to the resulting function
-  resetExampleState
+  resetExampleState,
 }) => {
   // replace the old value with this one
   setMyProperty('new value');
@@ -62,8 +61,6 @@ const StoreProvidedComponent = ({
   filterMyArray(value => typeof value === 'string');
   // does the same as the native `map` function
   mapMyArray(value => <p>{value}</p>);
-  // does the same as the native `reduce` function
-  reduceMyArray((accumulator, currentValue) => accumulator + currentValue);
 
   // merge the object in the state with this one
   mergeMyObject({ property: 'value' });
