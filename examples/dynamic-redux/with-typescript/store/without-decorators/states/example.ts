@@ -1,14 +1,15 @@
-import { DynamicState, Middleware } from 'dynamic-redux';
+import { StateCreator, MiddlewareCreator } from 'dynamic-redux';
 
-const exampleState = new DynamicState('example', {
+const exampleState = new StateCreator('example', {
   myProperty: 'default value',
   myArray: [],
   myObject: {},
-  myNumber: 0
+  myNumber: 0,
 });
 
-
 // there is several kinds of actions
+// note that the autocompletion of the kinds of action available for the type of your original property in the state
+// will work perfectly fine and will show you an error if you set an invalid kind of action
 exampleState.createActions({
   // the basic one is 'set', which only replace the value in the state
   // by the new value passed in arguments to the action
@@ -59,15 +60,15 @@ exampleState.createActions({
     'inc',
     'dec',
     // you can also reset a property which will set it to its value from the initial state
-    'reset'
+    'reset',
   ],
 
   // you can reset the whole state as well, which will set the initial state
   // this can be done by simply referencing the current state with `__STATE__`
   // and set the reset action
-  //! only `reset` can be used on the state. if you try another action
-  //! it will throw the following error: "state" doesn't exists on state "<stateName>"
-  __STATE__: 'reset'
+  // ! only `reset` can be used on the state. if you try another action
+  // ! it will throw the following error: "state" doesn't exists on state "<stateName>"
+  __STATE__: 'reset',
 
 });
 
@@ -77,14 +78,14 @@ exampleState.createMiddlewares([
   // if there is no action with the same name it will throw an error
   // second param target the kind of action
   // if the action doesn't use the same kind it will throw an error
-  //! a middleware can't be used on '__STATE__' this will not throw an error but won't work either
-  new Middleware('myNumber', 'inc')
+  // ! a middleware can't be used on '__STATE__' this will not throw an error but won't work either
+  new MiddlewareCreator('myNumber', 'inc')
     // `.callback` will take the function to use as a middleware
     // `store` is the redux store
     // `next` is a function to call if you want the next middleware
     // or the action to be called if there is no middleware after
     // `action` is an object containing the data about the current action
-    .callback(store => next => action => {
+    .handle(store => next => action => {
       // the other middlewares (if any) and the final action will be called
       // if the value passed to the action is superior to 0
       // otherwise the next middlewares (if any) and final action
@@ -92,7 +93,7 @@ exampleState.createMiddlewares([
       if (action.payload > 0) {
         next();
       }
-    })
+    }),
 ]);
 
 export default exampleState;

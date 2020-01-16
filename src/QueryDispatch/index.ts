@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import { Dispatch } from 'redux';
 
-import { MappersDataType, ObjectString, ObjectLiteral, ActionKinds, GlobalScope } from '../common';
+import { MappersDataType, ObjectString, ObjectLiteral, ActionKinds, GlobalScope, allActions } from '../common';
 import { splitWords, prefixAll, forIn } from '../utils';
 import { mapDispatch } from '../mapDispatch';
 
@@ -185,8 +185,8 @@ export class QueryDispatch {
    * @returns {this}
    * @public
    */
-  action = (dispatchData: MappersDataType | string[], actionList: string[]): this => {
-    actionList.forEach(action => this[action](dispatchData));
+  action = (dispatchData: MappersDataType | string[], actionList: Array<keyof typeof allActions>): this => {
+    actionList.forEach(action => this[action as string](dispatchData));
     return this;
   }
 
