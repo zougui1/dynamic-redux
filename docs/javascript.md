@@ -24,6 +24,8 @@ const exampleState = new StateCreator(
 );
 ```
 
+> note: you don't need to add the suffix "Reducer" to the state name, the class automatically do it
+
 A state can have options:
 
 ```js
@@ -163,3 +165,133 @@ exampleState.createActions({
 ```
 
 > note: it will throw an error if you try to use an action kind other than "reset" on the state
+
+## How to combine the states
+
+It is important to know that you always *have* to combine your states, otherwise some functions might not work as expected, if at all.
+
+The states combination is very similar to vanilla Redux
+
+```js
+import { CombineStates } from 'dynamic-redux';
+
+import exampleState from './exampleState';
+
+export default new CombineStates([exampleState]);
+```
+
+> note: even if you have only 1 state, you have to put it in an array
+
+## How to create a store
+
+The creation of a store is straightforward since you don't have to make your own configuration.
+
+```js
+import { createStore } from 'dynamic-redux';
+
+import combinedStates from './states';
+
+export default createStore(combinedStates);
+```
+
+By default create store will configure the Redux devtools with the `trace` option to true if:
+
+- it's available in the `window` object
+- the `NODE_ENV` environment variable is not set to "production"
+- the `disableDevTools` option is not set to true
+- or if the `forceDevTools` options is set to true
+
+As you have seen above, you can pass options to the function as well
+
+```js
+import { createStore } from 'dynamic-redux';
+
+import combinedStates from './states';
+
+export default createStore(combinedStates, {
+  forceDevTools: true,
+});
+```
+
+This will have for effect to have the Redux devtools to be **always** activated, even in production mode
+
+Here is a list of options available to pass to `createStore`
+
+| options         | type    | description                                                     |
+| --------------- | ------- | --------------------------------------------------------------- |
+| middlewares     | array   | Global scope middlewares that will be passed to Redux           |
+| selectors       | object  | Global scope selectors that will be used when mapping the state |
+| disableDevTools | boolean | disable the Redux devtools                                      |
+| forceDevTools   | boolean | force the activation of the Redux devtools, even if `disableDevTools` is set to `true` |
+
+## How to create middlewares
+
+There is 2 kinds of middlewares:
+
+- global scope middlewares
+- action scope middlewares
+
+The global scope middlewares are the ones like in vanilla Redux. These middlewares all are called before the call to the reducer that will modify the value in the state, thus you can do one or more code execution for one or more action with a single middleware.
+
+The action scope middlewares are called only before the call to the `dispatch` function provided by Redux **only** if the current action with its kind has middlewares, otherwise, they never get called.
+
+Action scope middlewares might be preferred since it avoids unecessary function call with `if` statements (since you've got to make a test on the type of the current action to know what to do for what action) since they **only** are called before the action kind that has middlewares is called.
+
+### How to create a global scope middleware
+
+The creation of a global scope middleware is the exact same as in vanilla Redux:
+
+```js
+export const myGlobalScopeMiddleware = store => next => action => {
+  if(action.type === 'SET_MY_STRING') {
+    // do some code
+  }
+
+  next(); // call the next middleware or reducer
+}
+```
+
+And to make it available to Redux is very similar as in vanilla Redux:
+
+```js
+import { createStore } from 'dynamic-redux';
+
+import combinedStates from './states';
+import { myGlobalScopeMiddleware } from './middlewares';
+
+export default createStore(combinedStates, {
+  middlewares: [myGlobalScopeMiddleware],
+});
+```
+
+### How to create an action scope middleware
+
+To create an action scope middleware, you will have to use a class in which you will give to a method of one of your states
+
+```js
+import { StateCreator, MiddlewareCreator } from 'dynamic-redux';
+
+const exampleState = new StateCreator('example', {
+  myLowerString: '',
+});
+
+exampleState.createActions({
+  myLowerString: 'set',
+});
+
+exampleState.createMiddlewares([
+  // it is important to have the actions created BEFORE the middlewares
+  // if `MiddlewareCreator` cannot find the action with its kind it will throw an error
+  new MiddlewareCreator('myLowerString', 'set')
+    // put your middleware in this method
+    .handle(store => next => action => {
+      // since the middleware is action specific, you don't need to
+      // test on the type of the action to execute the code
+
+      // `payload` is the property that contains the value
+      action.payload = action.payload.toLowerCase();
+
+      next();
+    }),
+]);
+```

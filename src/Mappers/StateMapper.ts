@@ -63,23 +63,23 @@ export class StateMapper {
       let propName = prop;
 
       const isInState = currentState.isInState(prop);
-      const isSelector = currentState.isSelector(prop);
-      const globalSelector = globalScope.selectors[prop];
+      const isStateSelector = currentState.isSelector(prop);
+      const isGlobalSelector = globalScope.selectors[prop];
 
-      if (!isInState && !isSelector && !globalSelector) {
+      if (!isInState && !isStateSelector && !isGlobalSelector) {
         throw new Error(`There is no prop or selector called "${prop}" in the state "${name}"`);
       }
 
-      if (isSelector || globalSelector) {
+      if (isStateSelector || isGlobalSelector) {
         propName += 'Selector';
       }
 
       // return either a property from the state or a selector
       this.newState[propName] = isInState
         ? stateReducer[prop]
-        : globalSelector
-          ? (...args) => globalScope.selectors[prop](this.state, ...args)
-          : (...args) => currentState.selectors[prop](stateReducer, ...args);
+        : isStateSelector
+          ? (...args) => currentState.selectors[prop](stateReducer, ...args)
+          : (...args) => globalScope.selectors[prop](this.state, ...args);
     };
   }
 }
