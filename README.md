@@ -1,12 +1,15 @@
-# dynamic-redux
+Dynamic-redux is a library that add a lot of abstraction on top of redux to avoid all the redundancy brung by redux.
 
-## installation
+It helps you write applications using the logic of redux in a faster, easier and more concise way.
 
-> npm i
+# installation
 
-## build the code
+> npm i dynamic-redux -S
 
-> npm run build
+## Documentations
+
+* [How to use Dynamic-redux with Javascript](https://github.com/zougui1/dynamic-redux/tree/master/docs/javascript.md)
+* [How to use Dynamic-redux with Typescript](https://github.com/zougui1/dynamic-redux/tree/master/docs/typescript.md)
 
 ## to do
 

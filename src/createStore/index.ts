@@ -20,7 +20,7 @@ const defaultOptions = {
  * @param {DefaultOptions} [options]
  */
 export const createStore = (reducer?: CombineStates | undefined, options: DefaultOptions = defaultOptions) => {
-  const { middlewares, selectors } = options;
+  const { middlewares, selectors, disableDevTools, forceDevTools } = options;
 
   // combines the states from the global scope if no reducer is specified
   if (!reducer) {
@@ -44,9 +44,11 @@ export const createStore = (reducer?: CombineStates | undefined, options: Defaul
   let devTools: any;
   const window: any = {}; // ! used only for dev and tests
 
-  // add the devtools if not in production
+  // add the devtools:
+  // - if not in production and not disabled
+  // - or if the devtools are forced
   // @ts-ignore
-  if (window.__REDUX_DEVTOOLS_EXTENSION__ && process.env.NODE_ENV !== 'production') {
+  if (forceDevTools || (!disableDevTools && window.__REDUX_DEVTOOLS_EXTENSION__ && process.env.NODE_ENV !== 'production')) {
     devTools = (window as any).__REDUX_DEVTOOLS_EXTENSION__({ trace: true });
   }
 

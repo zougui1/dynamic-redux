@@ -8,4 +8,6 @@ export class DefaultOptions {
    */
   selectors: ObjectOf<Selector<any>>;
   middlewares?: Array<Middleware<any, any, any>>;
+  forceDevTools?: boolean;
+  disableDevTools?: boolean;
 }
