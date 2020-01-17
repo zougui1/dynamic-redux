@@ -1,5 +1,7 @@
 # How to use Dynamic-redux with Javascript
 
+**It is important to be familiar with Redux vanilla before reading this documentation!**
+
 ## How to create a state
 
 A state with Dynamic-redux is a merge of a reducer with its action creators and action types
