@@ -71,67 +71,95 @@ exampleState.createActions({
   // this will create an action of kind "set" for the following properties
   myString: 'set',
   myArray: 'set',
-  myObject: 'set',
+  // you can define several kind of action for a single property using an array
+  myObject: ['set'],
 });
 ```
 
 > note: if you try to define an action for a property that doesn't exist in the initial state, it will throw an error. So make sure to set a default value for all your properties before defining your actions!
 
 There is not only one kind of action, "set" is the most basic one, but there is more!
-Here is a list of all existing action kinds
+
+### General action kinds
+
+General actions are action kinds can be used on **any** type:
+
 ```js
-import { StateCreator } from 'dynamic-redux';
-
-
-const exampleState = new StateCreator('example', {
-  myString: 'default value',
-  myArray: ['first value'],
-  myObject: { foo: 'bar' },
-  myNumber: 0,
-});
-
 exampleState.createActions({
-  // a property can have several action kinds at once, just use an array for that
   myString: [
     // this will replace the old value with the new value
-    'set', // can be used with any type
+    'set',
     // this will set the value to its original value (default value in the initial state)
-    'reset', // can be used with any type
+    'reset',
   ],
+  // "trigger" is a bit special as it doesn't need the property to exists
+  // it is used to create an action that is only used with middlewares and without modifying the state
+  nonExistingProperty: 'trigger',
+});
+```
+
+> note: the action kind "trigger" can be also be used on an existing property
+
+### Object action kinds
+
+```js
+exampleState.createActions({
   myObject: [
     // this will merge the object in the state with the given object
-    'merge', // can only be used with objects
+    'merge',
     // can perform complex action on a value (more detail later)
-    'query', // can only be used with objects and arrays
+    'query',
   ],
+});
+```
+
+### Array action kinds
+
+```js
+exampleState.createActions({
   myArray: [
     // will add a value at the end of the array, just like the vanilla `push` method
-    'push', // can only be used with arrays
+    'push',
     // will remove the last value of the array, just like the vanilla `pop` method
-    'pop', // can only be used with arrays
+    'pop',
     // will remove the first value of the array, just like the vanilla `shift` method
-    'shift', // can only be used with arrays
+    'shift',
     // will add a value at the beginning of the array, just like the vanilla `unshift` method
-    'unshift', // can only be used with arrays
+    'unshift',
     // will concat the array in the state with the given array, just like the vanilla `concat` method
-    'concat', // can only be used with arrays
+    'concat',
     // will filter the values in the array based on the given predicate, just like thet vanilla `filter` method
-    'filter', // can only be used with arrays
+    'filter',
     // will change the values in the array based on the given callback, just like thet vanilla `map` method
-    'push', // can only be used with arrays
+    'push',
+    // can perform complex action on a value (more detail later)
+    'query',
   ],
+});
+```
+
+### Number action kinds
+
+```js
+exampleState.createActions({
   myNumber: [
     // will increment the number based on the given number if specified, default value is 1
-    'inc', // can only be used with numbers
+    'inc',
     // will decrement the number based on the given number if specified, default value is 1
-    'dec', // can only be used with numbers
+    'dec',
   ],
+});
+```
 
+### How to perform actions on the state directly
+
+```js
+exampleState.createActions({
   // you can reset the whole state as well
   // this can be done simply by referencing the current state with `__STATE__`
   // and set the "reset" action
-  // WARNING! only the "reset" action kind can be used on the state. if you try another action
-  // it will throw the following error: `"state" doesn't exists on state "{stateName}"`
   __STATE__: 'reset',
 });
 ```
+
+> note: it will throw an error if you try to use an action kind other than "reset" on the state
