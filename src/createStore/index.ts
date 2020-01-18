@@ -6,7 +6,7 @@ import {
 } from 'redux';
 
 import { CombineStates } from '../CombineStates';
-import { DefaultOptions } from './types';
+import { StoreOptions } from './types';
 import { GlobalScope } from '../common';
 
 const defaultOptions = {
@@ -17,9 +17,9 @@ const defaultOptions = {
 /**
  *
  * @param {CombineStates} reducer
- * @param {DefaultOptions} [options]
+ * @param {StoreOptions} [options]
  */
-export const createStore = (reducer?: CombineStates | undefined, options: DefaultOptions = defaultOptions) => {
+export const createStore = (reducer?: CombineStates | undefined, options: StoreOptions = defaultOptions) => {
   const { middlewares, selectors, disableDevTools, forceDevTools } = options;
 
   // combines the states from the global scope if no reducer is specified

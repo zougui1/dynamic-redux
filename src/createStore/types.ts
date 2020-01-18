@@ -2,7 +2,7 @@ import { Middleware } from 'redux';
 
 import { Selector, ObjectOf } from 'src/common';
 
-export class DefaultOptions {
+export class StoreOptions {
   /**
    * @type {Object.<String, Function>}
    */

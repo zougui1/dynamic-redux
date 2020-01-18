@@ -7,21 +7,21 @@ export class CombineStates {
 
   /**
    * @type {Object.<String, StateCreator>}
-   * @public
+   * @private
    */
-  states: ObjectOf<StateCreator<any>> = {};
+  public states: ObjectOf<StateCreator<any>> = {};
 
   /**
    * @type {Object.<String, Reducer>}
-   * @public
+   * @private
    */
-  reducers: ObjectOf<Reducer> = {};
+  public reducers: ObjectOf<Reducer> = {};
 
   /**
    * @type {Reducer}
-   * @public
+   * @private
    */
-  combinedReducers: Reducer = null;
+  public combinedReducers: Reducer = null;
 
   /**
    * @param {DynamicState[]} states
@@ -36,7 +36,7 @@ export class CombineStates {
    * @param {DynamicState[]} states
    * @private
    */
-  setStates(states: Array<StateCreator<any>>) {
+  private setStates(states: Array<StateCreator<any>>) {
     states.forEach(state => {
       this.reducers[state.name + 'Reducer'] = state.reducer;
       this.states[state.name + 'Reducer'] = state;

@@ -51,7 +51,7 @@ export class StateCreator<T extends object> {
 
   /**
    * @type {Object.<String, Object.<String, ActionDispatcher>>}
-   * @public
+   * @private
    */
   public actions: ActionsType<T>;
 
@@ -69,7 +69,7 @@ export class StateCreator<T extends object> {
 
   /**
    * @type {Function}
-   * @public
+   * @private
    */
   public reducer: (state: T, action: ActionObject) => {};
 
@@ -87,7 +87,7 @@ export class StateCreator<T extends object> {
 
   /**
    * @type {StateSelectors<T>}
-   * @public
+   * @private
    */
   public selectors: StateSelectors<T> = {};
 
@@ -381,6 +381,9 @@ export class StateCreator<T extends object> {
     return this;
   }
 
+  /**
+   * @private
+   */
   addAction(actionName: string, actionKinds: string | string[]) {
     if (typeof actionKinds === 'string') {
       actionKinds = [actionKinds];
@@ -448,7 +451,7 @@ export class StateCreator<T extends object> {
    * @param {String} middleware.actionName
    * @param {String} middleware.actionKind
    * @param {Function} middleware.callbackAction
-   * @public
+   * @private
    */
   addMiddleware(middleware: MiddlewareCreator<T>): void {
     const actionKind = middleware.actionKind === '*'
@@ -530,7 +533,7 @@ export class StateCreator<T extends object> {
   /**
    * @param {String} action
    * @returns {ActionKinds | ActionKinds[]}
-   * @public
+   * @private
    */
   getActionKinds(action: string): ActionKinds | ActionKinds[] {
     return this.actionsOrigin[action];

@@ -6,21 +6,21 @@ export class MiddlewareCreator<T = any> {
 
   /**
    * @type {String}
-   * @public
+   * @private
    */
-  actionName: keyof T;
+  public actionName: keyof T;
 
   /**
    * @type {String}
-   * @public
+   * @private
    */
-  actionKind: keyof typeof allActions | '*';
+  public actionKind: keyof typeof allActions | '*';
 
   /**
    * @type {Middleware}
-   * @public
+   * @private
    */
-  handler: Middleware;
+  public handler: Middleware;
 
   /**
    *
@@ -38,8 +38,8 @@ export class MiddlewareCreator<T = any> {
    * @returns {this}
    * @public
    */
-  handle = (callback: Middleware) => {
-    this.handler = callback;
+  handle = (handler: Middleware) => {
+    this.handler = handler;
     return this;
   }
 }
