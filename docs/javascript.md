@@ -221,8 +221,8 @@ Here is a list of options available to pass to `createStore`
 
 | options         | type    | description                                                     |
 | --------------- | ------- | --------------------------------------------------------------- |
-| middlewares     | array   | Global scope middlewares that will be passed to Redux           |
-| selectors       | object  | Global scope selectors that will be used when mapping the state |
+| middlewares     | array   | Global middlewares that will be passed to Redux           |
+| selectors       | object  | Global selectors that will be used when mapping the state |
 | disableDevTools | boolean | disable the Redux devtools                                      |
 | forceDevTools   | boolean | force the activation of the Redux devtools, even if `disableDevTools` is set to `true` |
 
@@ -230,21 +230,21 @@ Here is a list of options available to pass to `createStore`
 
 There is 2 kinds of middlewares:
 
-- global scope middlewares
-- action scope middlewares
+- global middlewares
+- action middlewares
 
-The global scope middlewares are the ones like in vanilla Redux. These middlewares all are called before the call to the reducer that will modify the value in the state, thus you can do one or more code execution for one or more action with a single middleware.
+The global middlewares are the ones like in vanilla Redux. These middlewares all are called before the call to the reducer that will modify the value in the state, thus you can do one or more code execution for one or more action with a single middleware.
 
-The action scope middlewares are called only before the call to the `dispatch` function provided by Redux **only** if the current action with its kind has middlewares, otherwise, they never get called.
+The action middlewares are called only before the call to the `dispatch` function provided by Redux **only** if the current action with its kind has middlewares, otherwise, they never get called.
 
-Action scope middlewares might be preferred since it avoids unecessary function call with `if` statements (since you've got to make a test on the type of the current action to know what to do for what action) since they **only** are called before the action kind that has middlewares is called.
+Action middlewares might be preferred since it avoids unecessary function call with `if` statements (since you've got to make a test on the type of the current action to know what to do for what action) since they **only** are called before the action kind that has middlewares is called.
 
-### How to create a global scope middleware
+### How to create a global middleware
 
-The creation of a global scope middleware is the exact same as in vanilla Redux:
+The creation of a global middleware is the exact same as in vanilla Redux:
 
 ```js
-export const myGlobalScopeMiddleware = store => next => action => {
+export const myGlobalMiddleware = store => next => action => {
   if(action.type === 'SET_MY_STRING') {
     // do some code
   }
@@ -259,16 +259,16 @@ And to make it available to Redux is very similar as in vanilla Redux:
 import { createStore } from 'dynamic-redux';
 
 import combinedStates from './states';
-import { myGlobalScopeMiddleware } from './middlewares';
+import { myGlobalMiddleware } from './middlewares';
 
 export default createStore(combinedStates, {
-  middlewares: [myGlobalScopeMiddleware],
+  middlewares: [myGlobalMiddleware],
 });
 ```
 
-### How to create an action scope middleware
+### How to create an action middleware
 
-To create an action scope middleware, you will have to use a class in which you will give to a method of one of your states
+To create an action middleware, you will have to use a class in which you will give to a method of one of your states
 
 ```js
 import { StateCreator, MiddlewareCreator } from 'dynamic-redux';
@@ -297,3 +297,210 @@ exampleState.createMiddlewares([
     }),
 ]);
 ```
+
+## How to recover the properties from the states
+
+Dynamic-redux has its own functions to help you recover the properties from the state in a much more concise way.
+
+If you want to recover the properties from a single state, a simple string is enough:
+
+```js
+import { mapState } from 'dynamic-redux';
+
+const mapStateToProps = mapState('example: myString myObject myArray');
+```
+
+and that's it.
+
+`example` is the state's name used as a 'namespace' the namespace and the properties to recover are separated by a colon `:`.
+The properties are separated by a whitespace
+
+If you want to recover the properties from several states, you can use an object:
+
+```js
+import { mapState } from 'dynamic-redux';
+
+const mapStateToProps = mapState({
+  example: 'myString myObject',
+  secondState: ['property1', 'property2 property3'],
+});
+```
+
+The property of the object is the state's name, and the value can be either a string or an array of strings.
+The strings in the array can be either a string containing a single property or a string containing several properties separated by a whitespace.
+
+> note: if the state or the property in the state doesn't exists it will throw an error
+
+## How to recover actions from the states
+
+The way to recover the actions from the states is *very* similar to the way of recovering properties from them, and this is thanks to the function `mapDispatch`
+
+for actions from a single state:
+
+```js
+import { mapDispatch } from 'dynamic-redux';
+
+const mapDispatchToProps = mapDispatch('example: setMyString mergeMyObject');
+```
+
+for actions from a several states:
+
+```js
+import { mapDispatch } from 'dynamic-redux';
+
+const mapDispatchToProps = mapDispatch({
+  example: 'setMyString mergeMyObject',
+  secondState: ['setProperty1', 'pushProperty2 queryProperty3'],
+});
+```
+
+> note: if the state or the action in the state doesn't exists it will throw an error
+
+There is also another of recovering action from the state using `QueryDispatch`, but we will cover that later.
+
+## How to connect mapStateToProps and mapDispatchToProps with a React component
+
+While the library can be used in JS vanilla and with any other framework. Dynamic-redux has a function to add a bit more abstraction on top of the connection
+
+In Redux vanilla (using react-redux) you would connect you mappedProps to your React component like so
+
+```js
+import React from 'react';
+import { connect } from 'react-redux';
+import { mapState, mapDispatch } from 'dynamic-redux';
+
+const mapStateToProps = mapState('example: myString myObject myArray');
+const mapDispatchToProps = mapDispatch({
+  example: 'setMyString mergeMyObject',
+  anotherState: ['setProperty1', 'mergeProperty2 queryProperty3'],
+});
+
+const MyComponent = () => <p>Some text</p>;
+
+export default connect(mapStateToProps, mapDispatchToProps)(MyComponent);
+```
+
+With Dynamic-redux's `connect` function, you won't even need to import and call the mapper functions
+
+```js
+import React from 'react';
+import { connect } from 'dynamic-redux';
+
+const mapStateToProps = 'example: myString myObject myArray';
+const mapDispatchToProps = {
+  example: 'setMyString mergeMyObject',
+  anotherState: ['setProperty1', 'mergeProperty2 queryProperty3'],
+};
+
+const MyComponent = () => <p>Some text</p>;
+
+export default connect(mapStateToProps, mapDispatchToProps)(MyComponent);
+```
+
+## How to create selectors
+
+Like for the middlewares, there is 2 types of selectors
+
+- Global selectors
+- State selectors
+
+### How to create global selectors
+
+Global selectors are defined globally and must be given to the `createStore` function
+
+The first parameter of a global selector is the Redux's whole state. All other parameters are the arguments you might have given to your selector when called.
+
+/store/states/example.js
+
+```js
+import { StateCreator } from 'dynamic-redux';
+
+const exampleState = new StateCreator('example', {
+  myString: 'VaLuE',
+});
+
+export default exampleState;
+```
+
+/store/selectors.js
+
+```js
+export const getMyStringLowerSelector = state => {
+  return state.exampleState.myString.toLowerCase();
+}
+```
+
+/store/index.js
+
+```js
+import { createStore } from 'dynamic-redux';
+
+import combinedStates from './states';
+import { getMyStringLowerSelector } from './selectors';
+
+export default createStore(combinedStates, {
+  selectors: {
+    getMyStringLowerSelector: getMyStringLowerSelector,
+  },
+});
+```
+
+Your selectors can be recovered from the `mapState` function and used like that:
+
+```js
+import React from 'react';
+import { connect } from 'dynamic-redux';
+
+const mapStateToProps = 'example: getMyStringLowerSelector';
+
+const MyComponent = ({ getMyStringLowerSelector }) => {
+  // the selector will always be a function
+  // if you give it parameters they will be given to its original function from the second parameter
+  return getMyStringLowerSelector();
+}
+
+export default connect(mapStateToProps)(MyComponent);
+```
+
+> note: it doesn't matter in which namespace (here it's "example") a global selector is get from
+
+### How to create state selectors
+
+Global selectors are attached to a state the same way as action middlewares
+
+The first parameter of a state selector is the state value. All other parameters are the arguments you might have given to your selector when called.
+
+```js
+import { StateCreator } from 'dynamic-redux';
+
+const exampleState = new StateCreator('example', {
+  myString: 'VaLuE',
+});
+
+exampleState.createSelectors({
+  getMyStringLower: state => {
+    return state.myString.toLowerCase();
+  },
+});
+
+export default exampleState;
+```
+
+And will be used the same way as a global selector
+
+```js
+import React from 'react';
+import { connect } from 'dynamic-redux';
+
+const mapStateToProps = 'example: getMyStringLowerSelector';
+
+const MyComponent = ({ getMyStringLowerSelector }) => {
+  // the selector will always be a function
+  // if you give it parameters they will be given to its original function from the second parameter
+  return getMyStringLowerSelector();
+}
+
+export default connect(mapStateToProps)(MyComponent);
+```
+
+> note: for a state selector you must get it from its defined state

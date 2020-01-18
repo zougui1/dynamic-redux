@@ -12,6 +12,7 @@ export class StateMapper {
   private mapper: GenericMapper;
 
   /**
+   * contains the Redux's state
    * @type {Object}
    * @private
    */
@@ -60,7 +61,6 @@ export class StateMapper {
     }
 
     return prop => {
-      let propName = prop;
 
       const isInState = currentState.isInState(prop);
       const isStateSelector = currentState.isSelector(prop);
@@ -70,12 +70,8 @@ export class StateMapper {
         throw new Error(`There is no prop or selector called "${prop}" in the state "${name}"`);
       }
 
-      if (isStateSelector || isGlobalSelector) {
-        propName += 'Selector';
-      }
-
       // return either a property from the state or a selector
-      this.newState[propName] = isInState
+      this.newState[prop] = isInState
         ? stateReducer[prop]
         : isStateSelector
           ? (...args) => currentState.selectors[prop](stateReducer, ...args)

@@ -416,7 +416,6 @@ export class StateCreator<T extends object> {
    * @returns {this}
    * @public
    */
-  // TODO create the middleware object
   createMiddlewares(middlewares: Array<MiddlewareCreator<T>>): this {
     middlewares.forEach(middleware => {
       const { actionName, actionKind } = middleware;
@@ -470,7 +469,6 @@ export class StateCreator<T extends object> {
    * @param {Object} selectors
    * @public
    */
-  // TODO create a type for selector
   createSelectors(selectors: StateSelectors<T>) {
     if (!selectors || typeof selectors !== 'object') {
       throw new Error(`Selectors must be in an object. Got "${selectors}"`);
