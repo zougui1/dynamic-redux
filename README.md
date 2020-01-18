@@ -33,3 +33,8 @@ const mapDispatchToProps = new QueryDispatch()
     mySecondProperty: 'set',
   });
 ```
+
+## docs to do
+
+* create an API md that will contain the public API of dynamic-redux
+* refer the API for every section to their corresponding reference

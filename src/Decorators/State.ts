@@ -6,7 +6,6 @@ import { StateOptions } from '../StateCreator/types';
 
 export function State(nameOrOptions?: string | ObjectLiteral, maybeOptions?: StateOptions) {
 
-  // tslint:disable-next-line: ban-types
   return (target: new () => ObjectLiteral) => {
     let name: string;
     let options: StateOptions = {};
@@ -28,6 +27,7 @@ export function State(nameOrOptions?: string | ObjectLiteral, maybeOptions?: Sta
 
     globalScope.states[name] = new StateCreator(name, new target(), options)
       .createActions(globalScope.actions[targetName])
-      .createMiddlewares(globalScope.middlewares[targetName]);
+      .createMiddlewares(globalScope.middlewares[targetName])
+      .createSelectors(globalScope.selectors[targetName]);
   };
 }

@@ -504,3 +504,120 @@ export default connect(mapStateToProps)(MyComponent);
 ```
 
 > note: for a state selector you must get it from its defined state
+
+## How to perform complex actions using Query
+
+Query is an object containing lot of methods to allow you to perform more complex actions. For example, what if you want to add a value in an array within an object?
+
+With the following state
+
+```js
+import { StateCreator } from 'dynamic-redux';
+
+const exampleState = new StateCreator('example', {
+  myObject: {
+    anArray: [0, 1, 2],
+  },
+});
+
+exampleState.createActions({
+  myObject: 'set',
+});
+```
+
+Without `Query` you would do something like that:
+
+```js
+import React from 'react';
+import { connect } from 'dynamic-redux';
+
+const mapStateToProps = 'example: myObject';
+const mapDispatchToProps = 'example: setMyObject';
+
+const MyComponent = ({ myObject, setMyObject }) => {
+  myObject.anArray.push(3);
+
+  setMyObject(myObject);
+
+  return null;
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(MyComponent);
+```
+
+With Query it would be something like that:
+
+```js
+import React from 'react';
+import { connect } from 'dynamic-redux';
+
+const mapDispatchToProps = 'example: queryMyObject';
+
+const MyComponent = ({ queryMyObject }) => {
+  queryMyObject(q => q
+    .get('anArray')
+    .push(3)
+  );
+
+  return null;
+}
+
+export default connect(null, mapDispatchToProps)(MyComponent);
+```
+
+In this example the benefits isn't big because the example is simply, but you can imagine what it would be if it was adding a value in an array, in an object, in an array that is in an object. Or if we had to find an object within an array and modify that found object.
+
+The query action is a function that takes the Query object as parameter and you **must** return the `Query` object
+
+
+More details on Query available in the API. (make a link to Query's API)
+
+## How to use QueryDispatch
+
+QueryDispatch can be used to avoid the copy/paste of writing the actions you want to recover.
+
+For example imagine you want to recover those actions:
+
+```js
+const mapDispatchToProps = mapDispatch({
+  example: 'setMyArray pushMyArray popMyArray concatMyArray filterMyArray mapMyArray',
+  anotherState: 'setProperty1 setProperty2 setProperty3 setProperty4',
+});
+```
+
+With `QueryDispatch` it would be something like that:
+
+```js
+const mapDispatchToProps = new QueryDispatch()
+  .all('example: myArray')
+  .set('example: property1 property2 property3 property4');
+```
+
+QueryDispatch cannot be used just like that, since what all those methods returns is the instance of `QueryDispatch`, you don't recover data that can be consumed by react-redux or any other library you use, if any.
+
+If you want to use another library's connect function or any solution other than Dynamic-redux, you will have to call the method `results` at the end of the chain.
+
+```js
+import { connect } from 'react-redux';
+
+const mapDispatchToProps = new QueryDispatch()
+  .all('example: myArray')
+  .set('example: property1 property2 property3 property4')
+  .results();
+
+connect(null, mapDispatchToProps);
+```
+
+If you use dynamic-redux's connect function, you can simply pass it as it is
+
+```js
+import { connect } from 'dynamic-redux';
+
+const mapDispatchToProps = new QueryDispatch()
+  .all('example: myArray')
+  .set('example: property1 property2 property3 property4');
+
+connect(null, mapDispatchToProps);
+```
+
+More details on QueryDispatch available in the API. (make a link to QueryDispatch's API)

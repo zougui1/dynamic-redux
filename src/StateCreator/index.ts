@@ -467,9 +467,10 @@ export class StateCreator<T extends object> {
   /**
    * create selectors
    * @param {Object} selectors
+   * @returns {this}
    * @public
    */
-  createSelectors(selectors: StateSelectors<T>) {
+  createSelectors(selectors: StateSelectors<T>): this {
     if (!selectors || typeof selectors !== 'object') {
       throw new Error(`Selectors must be in an object. Got "${selectors}"`);
     }
@@ -481,6 +482,8 @@ export class StateCreator<T extends object> {
 
       this.selectors[name] = selector;
     });
+
+    return this;
   }
 
   /**

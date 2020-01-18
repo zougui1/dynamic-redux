@@ -1,7 +1,10 @@
+import * as _ from 'lodash';
+
 import { ObjectOf, ObjectLiteral } from '.';
 import { StateCreator } from '../StateCreator';
 import { Selector } from './Selector';
 import { MiddlewareCreator } from './../MiddlewareCreator';
+import type { ISelector } from 'src/interfaces/ISelector';
 
 export class GlobalScope {
 
@@ -14,7 +17,7 @@ export class GlobalScope {
   /**
    * give it the type of an object of selectors
    */
-  selectors: ObjectOf<Selector<ObjectLiteral>> = {};
+  selectors: ObjectOf<ObjectOf<Selector<ObjectLiteral>>> = {};
   /**
    * give it the type of the redux store
    */
@@ -32,6 +35,16 @@ export class GlobalScope {
     }
 
     return GlobalScope.instance;
+  }
+
+  addSelectors(stateName: string, selector: ISelector<any>) {
+    if (!this.selectors[stateName]) {
+      this.actions[stateName] = {};
+    }
+
+    const selectorName = _.lowerFirst(selector.constructor.name);
+
+    this.selectors[stateName][selectorName] = selector.handler;
   }
 
   addActions(stateName: string, actionName: string, actionKinds: string | string[]) {
