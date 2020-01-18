@@ -1,7 +1,8 @@
 # StateCreator
 
-**type:** Class.
-**description:** State that contains and handle the reducer, action creators and action types.
+**type:** Class
+
+**description:** State that contains and handle the reducer, action creators and action types
 
 Parameters:
 
@@ -21,8 +22,10 @@ Methods:
 
 ## createActions
 
-**return:** *this*.
-**description:** Create the actions for the state.
+**return:** *this*
+
+**description:** Create the actions for the state
+
 **parameters:**
 
 | name         | type                                      | required | description          |
@@ -31,8 +34,10 @@ Methods:
 
 ## createMiddlewares
 
-**return:** *this*.
-**description:** Create the middlewares for the actions.
+**return:** *this*
+
+**description:** Create the middlewares for the actions
+
 **parameters:**
 
 | name         | type         | required | description                 |
@@ -41,8 +46,10 @@ Methods:
 
 ## createSelectors
 
-**return:** *this*.
-**description:** Create the selectors for the state.
+**return:** *this*
+
+**description:** Create the selectors for the state
+
 **parameters:**
 
 | name         | type                            | required | description                         |
@@ -51,8 +58,10 @@ Methods:
 
 ## isInState
 
-**return:** boolean.
-**description:** Check if `prop` is in the state.
+**return:** boolean
+
+**description:** Check if `prop` is in the state
+
 **parameters:**
 
 | name    | type   | required | description   |
@@ -61,8 +70,10 @@ Methods:
 
 ## isSelector
 
-**return:** boolean.
-**description:** Check if `prop` is a selector.
+**return:** boolean
+
+**description:** Check if `prop` is a selector
+
 **parameters:**
 
 | name    | type   | required | description   |
@@ -71,8 +82,10 @@ Methods:
 
 ## hasAction
 
-**return:** boolean.
-**description:** Check if the action with its kind exists.
+**return:** boolean
+
+**description:** Check if the action with its kind exists
+
 **parameters:**
 
 | name       | type   | required | description        |
@@ -82,8 +95,10 @@ Methods:
 
 ## getActionKinds
 
-**return:** boolean.
-**description:** Get the kinds used for `action`.
+**return:** boolean
+
+**description:** Get the kinds used for `action`
+
 **parameters:**
 
 | name       | type   | required | description        |

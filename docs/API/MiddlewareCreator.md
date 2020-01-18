@@ -1,7 +1,8 @@
 # createStore
 
-**type:** Class.
-**description:** create a middleware consumable by the states.
+**type:** Class
+
+**description:** create a middleware consumable by the states
 
 Parameters:
 
@@ -15,6 +16,7 @@ Methods:
 ## Handle
 
 **return:** *this*
+
 **description:** will define `handler` as the handler of the middleware
 
 Parameters:
