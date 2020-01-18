@@ -1,7 +1,7 @@
 # CombineStates
 
-**type:** Class
-**description:** Combine all the given states
+**type:** Class.
+**description:** Combine all the given states.
 
 Parameters:
 

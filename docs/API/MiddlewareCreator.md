@@ -1,7 +1,7 @@
 # createStore
 
-**type:** Class
-**description:** create a middleware consumable by the states
+**type:** Class.
+**description:** create a middleware consumable by the states.
 
 Parameters:
 

@@ -56,6 +56,8 @@ const exampleState = new StateCreator(
 );
 ```
 
+[See StateCreator's API](https://github.com/zougui1/dynamic-redux/blob/master/docs/API/StateCreator.md)
+
 ## How to create actions
 
 Having a state is pretty nice, but without actions to change the values, it's not so useful.
@@ -184,6 +186,8 @@ export default new CombineStates([exampleState]);
 
 > note: even if you have only 1 state, you have to put it in an array
 
+[See CombineStates' API](https://github.com/zougui1/dynamic-redux/blob/master/docs/API/CombineStates.md)
+
 ## How to create a store
 
 The creation of a store is straightforward since you don't have to make your own configuration.
@@ -219,12 +223,7 @@ This will have for effect to have the Redux devtools to be **always** activated,
 
 Here is a list of options available to pass to `createStore`
 
-| options         | type    | description                                                     |
-| --------------- | ------- | --------------------------------------------------------------- |
-| middlewares     | array   | Global middlewares that will be passed to Redux           |
-| selectors       | object  | Global selectors that will be used when mapping the state |
-| disableDevTools | boolean | disable the Redux devtools                                      |
-| forceDevTools   | boolean | force the activation of the Redux devtools, even if `disableDevTools` is set to `true` |
+[See createState's API](https://github.com/zougui1/dynamic-redux/blob/master/docs/API/createStore.md)
 
 ## How to create middlewares
 
@@ -297,6 +296,8 @@ exampleState.createMiddlewares([
     }),
 ]);
 ```
+
+[See MiddlewareCreator's API](https://github.com/zougui1/dynamic-redux/blob/master/docs/API/MiddlewareCreator.md)
 
 ## How to recover the properties from the states
 

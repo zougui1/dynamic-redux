@@ -1,8 +1,8 @@
 # createStore
 
-**type:** Function
-**return:** Redux's store
-**description:** create a redux store
+**type:** Function.
+**return:** Redux's store.
+**description:** create a redux store.
 
 Parameters:
 
