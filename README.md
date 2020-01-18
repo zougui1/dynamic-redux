@@ -6,7 +6,7 @@ It helps you write applications using the logic of redux in a faster, easier and
 
 > npm i dynamic-redux -S
 
-## Documentations
+## Documentation
 
 * [How to use Dynamic-redux with Javascript](https://github.com/zougui1/dynamic-redux/tree/master/docs/javascript.md)
 * [How to use Dynamic-redux with Typescript](https://github.com/zougui1/dynamic-redux/tree/master/docs/typescript.md)
