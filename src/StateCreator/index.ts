@@ -533,7 +533,7 @@ export class StateCreator<T extends object> {
   /**
    * @param {String} action
    * @returns {ActionKinds | ActionKinds[]}
-   * @private
+   * @public
    */
   getActionKinds(action: string): ActionKinds | ActionKinds[] {
     return this.actionsOrigin[action];

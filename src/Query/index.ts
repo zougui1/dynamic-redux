@@ -19,9 +19,9 @@ export class Query<T = null> {
   /**
    * result of the query (is also the source that contains `this.property`)
    * @type {T}
-   * @public
+   * @private
    */
-  result: T;
+  public result: T;
   /**
    * last action that have been done
    * @type {Function}
@@ -341,7 +341,7 @@ export class Query<T = null> {
    * @returns {Query}
    * @public
    */
-  filter(predicate: string | number | Iteratee<T, boolean>, testValue): this {
+  filter(predicate: string | number | Iteratee<T, boolean>, testValue: any): this {
     let callback: Iteratee<T, boolean>;
 
     if (typeof predicate !== 'function') {

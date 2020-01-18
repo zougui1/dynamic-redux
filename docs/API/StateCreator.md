@@ -56,6 +56,31 @@ Methods:
 |--------------|---------------------------------|----------|-------------------------------------|
 | selectors    | object.&lt;string, function&gt; | true     | Object containing all the selectors for the state |
 
+The selectors must be a function. The first parameter will be the current state and all other parameters will be parameters that have been passed to the called selector function that wrapped this function
+
+```js
+const exampleState = new StateCreator('example' {
+  myString: 'value',
+});
+
+exampleState.createSelector({
+  myStringSuffixedSelector: (state, suffix) => {
+    return state.myString + ':' + suffix;
+  },
+});
+```
+
+```js
+const mapStateToProps = mapState('example: myStringSuffixedSelector');
+
+const MyComponent = ({ myStringSuffixedSelector }) => {
+  const suffixedString = myStringSuffixedSelector('mySuffix'); // 'value:mySuffix'
+  return null;
+}
+
+connect(mapStateToProps)(MyComponent);
+```
+
 ## isInState
 
 **return:** boolean
