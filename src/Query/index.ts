@@ -384,15 +384,15 @@ export class Query<T = null> {
 
   /**
    * slice `this.property`
-   * @param {Number} start
-   * @param {Number} deleteCount
+   * @param {Number} begin
+   * @param {Number} end
    * @returns {Query}
    * @public
    */
-  slice(start: number, deleteCount: number) {
+  slice(begin: number, end: number) {
     return this.setAction(() => {
       if (Array.isArray(this.property)) {
-        return this.property.slice(start, deleteCount);
+        return this.property.slice(begin, end);
       }
     });
   }
@@ -406,9 +406,12 @@ export class Query<T = null> {
    */
   remove(predicate: Iteratee<T, boolean> | Array<ItemTypeIfArray<T>>, callback: ((query: Query<Array<ItemTypeIfArray<T>>>) => any)) {
     if (_.isFunction(predicate)) {
-      this.newAction(() => {
+      this.returningAction(() => {
         if (Array.isArray(this.property)) {
-          callback(new Query(_.remove(this.property, predicate)));
+          const removed = _.remove(this.property, predicate);
+          callback(new Query(removed));
+
+          return removed;
         }
         return null;
       });
@@ -458,10 +461,10 @@ export class Query<T = null> {
    * @returns {Query}
    * @public
    */
-  merge(...objects: ObjectLiteral[]): this {
+  merge(...sources: ObjectLiteral[]): this {
     return this.setAction(() => {
       if (this.property != null && typeof this.property === 'object') {
-        merge(this.property, ...objects);
+        merge(this.property, ...sources);
       }
     });
   }
@@ -496,9 +499,9 @@ export class Query<T = null> {
   /**
    * set `this.property` with `this.returnedElement`
    * @return {Query}
-   * @private
+   * @public
    */
-  private returned(): this {
+  returned(): this {
     return this.set(this.returnedElement);
   }
 

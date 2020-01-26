@@ -75,7 +75,7 @@ export class StateMapper {
         ? stateReducer[prop]
         : isStateSelector
           ? (...args) => currentState.selectors[prop](stateReducer, ...args)
-          : (...args) => globalScope.selectors[prop](this.state, ...args);
+          : (...args) => globalScope.globalSelectors[prop](this.state, ...args);
     };
   }
 }

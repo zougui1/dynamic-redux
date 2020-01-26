@@ -38,7 +38,7 @@ export const createStore = (reducer?: CombineStates | undefined, options: StoreO
   // set "global" data that are used elsewhere
   const globalScope = GlobalScope.get();
   globalScope.states = reducer.states;
-  globalScope.selectors = selectors;
+  globalScope.globalSelectors = selectors;
 
   let enhancers: any;
   let devTools: any;

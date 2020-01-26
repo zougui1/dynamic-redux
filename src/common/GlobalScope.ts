@@ -18,6 +18,7 @@ export class GlobalScope {
    * give it the type of an object of selectors
    */
   selectors: ObjectOf<ObjectOf<Selector<ObjectLiteral>>> = {};
+  globalSelectors: ObjectOf<Selector<ObjectLiteral>> = {};
   /**
    * give it the type of the redux store
    */
