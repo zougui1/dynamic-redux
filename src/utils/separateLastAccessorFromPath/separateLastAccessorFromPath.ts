@@ -1,4 +1,4 @@
-import { getArrayIndexing } from '.';
+import { getArrayIndexing } from '..';
 
 interface SeparatedPath {
   path: string;
@@ -17,7 +17,7 @@ export function separateLastAccessorFromPath(path: string): SeparatedPath {
 
   // if `index.length` is greater than 1 it means there's an array indexing
   if (index.length > 1) {
-    lastPath = Number(index.pop());
+    lastPath = Number(index[1]);
     fullPath = index[0];
   } else {
     // get the last accessor from the path

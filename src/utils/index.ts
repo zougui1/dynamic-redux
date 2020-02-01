@@ -1,6 +1,6 @@
 export * from './cloneDeep';
 export * from './createSpecificActionDecorator';
-export * from './forIn';
+export * from './forIn/forIn';
 export * from './getArrayIndexing';
 export * from './getType';
 export * from './merge';

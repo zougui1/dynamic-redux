@@ -1,4 +1,4 @@
-const reArrayIndex = /\[([0-9])\]$/;
+const reArrayIndex = /\[([0-9]+)\]$/;
 
 /**
  * get an array indexing value

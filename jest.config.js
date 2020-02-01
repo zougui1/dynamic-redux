@@ -185,4 +185,11 @@ module.exports = {
 
   // Whether to use watchman for file crawling
   // watchman: true,
+
+  roots: ['<rootDir>/src'],
+  transform: {
+    '^.+\\.ts': 'ts-jest',
+  },
+  testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.ts$',
+  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
 };

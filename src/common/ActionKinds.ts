@@ -23,39 +23,26 @@ export enum ActionKinds {
 }
 
 // object containing all general actions
-export const generalActions = {
-  set: null,
-  reset: null,
-  trigger: null,
-};
+export type GeneralActions = 'set' | 'reset' | 'trigger';
 
 // object containing all array actions
-export const arrayActions = {
-  push: null,
-  pop: null,
-  shift: null,
-  unshift: null,
-  concat: null,
-  filter: null,
-  map: null,
-  query: null,
-};
+export type ArrayActions = (
+  'push' |
+  'pop' |
+  'shift' |
+  'unshift' |
+  'concat' |
+  'filter' |
+  'map' |
+  'query'
+);
 
 // object containing all object actions
-export const objectActions = {
-  merge: null,
-  query: null,
-};
+export type ObjectActions = 'merge' | 'query';
 
 // object containing all number actions
-export const numberActions = {
-  inc: null,
-  dec: null,
-};
+export type NumberActions = 'inc' | 'dec';
 
-export const allActions = {
-  ...generalActions,
-  ...arrayActions,
-  ...objectActions,
-  ...numberActions,
-};
+export type AllActions = GeneralActions | ArrayActions | ObjectActions | NumberActions;
+
+export const actionList = Object.values(ActionKinds);

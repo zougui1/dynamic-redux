@@ -3,8 +3,8 @@ import * as _ from 'lodash';
 import { ObjectOf, ObjectLiteral } from '.';
 import { StateCreator } from '../StateCreator';
 import { Selector } from './Selector';
-import { MiddlewareCreator } from './../MiddlewareCreator';
-import type { ISelector } from 'src/interfaces/ISelector';
+import { MiddlewareCreator } from '../MiddlewareCreator';
+import { ISelector } from '../interfaces/ISelector';
 
 export class GlobalScope {
 

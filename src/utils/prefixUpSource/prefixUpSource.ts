@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 
-import { prefixer } from './prefixer';
+import { prefixer } from '..';
 
 /**
  * add a `prefix` to a `string` and upper the first character of the `string`

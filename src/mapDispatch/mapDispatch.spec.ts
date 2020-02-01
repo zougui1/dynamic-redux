@@ -1,4 +1,8 @@
-const { mapDispatch, DynamicState, createStore, CombineStates } = require('../dist');
+// @ts-nocheck
+import { CombineStates } from '../CombineStates';
+import { createStore } from '../createStore';
+import { StateCreator } from '../StateCreator';
+import { mapDispatch } from './mapDispatch';
 
 const myNumber = 5;
 const myString = 'super string';
@@ -6,7 +10,7 @@ const username = 'Zougui';
 const password = 'super password';
 const email = 'zougui@gmail.com';
 
-const state = new DynamicState('state', {
+const state = new StateCreator('state', {
   myNumber,
   myString,
 });
@@ -16,7 +20,7 @@ state.createActions({
   myString: 'set',
 });
 
-const user = new DynamicState('user', {
+const user = new StateCreator('user', {
   username,
   password,
   email,
@@ -35,30 +39,25 @@ const combinedStates = new CombineStates([
 
 const store = createStore(combinedStates);
 
-describe('mapDispatch returns functions in the expected properties', () => {
-  test('mapDispatch used with a string. Single state', () => {
+describe('mapDispatch()', () => {
+  it('should return an object with the correct actions when used with a string (Single state)', () => {
     const returnedFunctions = mapDispatch('state: setMyNumber incMyNumber setMyString')(store.dispatch);
 
-    expect(returnedFunctions).toHaveProperty('setMyNumber');
-    expect(returnedFunctions).toHaveProperty('setMyString');
-    expect(returnedFunctions).toHaveProperty('incMyNumber');
+    expect(typeof returnedFunctions).toBe('object');
+    expect(!!returnedFunctions).toBe(true);
     expect(typeof returnedFunctions.setMyNumber).toBe('function');
     expect(typeof returnedFunctions.setMyString).toBe('function');
     expect(typeof returnedFunctions.incMyNumber).toBe('function');
   });
 
-  test('mapDispatch used with an Object. Multiple states', () => {
+  it('should return an object with the correct actions when used with an object (Multiple states)', () => {
     const returnedFunctions = mapDispatch({
       state: 'setMyNumber incMyNumber setMyString',
-      user: ['setUsername setPassword', 'setEmail']
+      user: ['setUsername setPassword', 'setEmail'],
     })(store.dispatch);
 
-    expect(returnedFunctions).toHaveProperty('setMyNumber');
-    expect(returnedFunctions).toHaveProperty('setMyString');
-    expect(returnedFunctions).toHaveProperty('incMyNumber');
-    expect(returnedFunctions).toHaveProperty('setUsername');
-    expect(returnedFunctions).toHaveProperty('setPassword');
-    expect(returnedFunctions).toHaveProperty('setEmail');
+    expect(typeof returnedFunctions).toBe('object');
+    expect(!!returnedFunctions).toBe(true);
     expect(typeof returnedFunctions.setMyNumber).toBe('function');
     expect(typeof returnedFunctions.setMyString).toBe('function');
     expect(typeof returnedFunctions.incMyNumber).toBe('function');
@@ -66,46 +65,46 @@ describe('mapDispatch returns functions in the expected properties', () => {
     expect(typeof returnedFunctions.setPassword).toBe('function');
     expect(typeof returnedFunctions.setEmail).toBe('function');
   });
-});
 
-describe('mapDispatch throws an error when you try to get non-existing data', () => {
-  test('mapDispatch tries to get actions from a non-existing state', () => {
+  it('should throw an error when trying to get actions from a non-existing state', () => {
     const nonExistingState = () => mapDispatch('nonExistingState: setMyNumber')(store.dispatch);
 
     expect(nonExistingState).toThrowError('nonExistingState');
   });
 
-  test('mapDispatch tries to get a non-existing action', () => {
+  it('should throw an error when trying to get a non-existing action', () => {
     const nonExistingAction = () => mapDispatch('state: nonExistingAction')(store.dispatch);
 
     expect(nonExistingAction).toThrowError('nonExistingAction');
   });
-});
 
-describe('mapDispatch throws an error when you give it invalid types !(String | Object.<String | String[]>)', () => {
-  test('does not use mapDispatch with a String nor an Object', () => {
+  it('should throw an error when not used with a String or an Object', () => {
+    // @ts-ignore
     const invalidType = () => mapDispatch(['state', 'setMyNumber'])(store.getState());
 
     expect(invalidType).toThrowError('The props must be either a string or an object');
   });
 
-  test('does not use mapDispatch with a String nor an Array within an object', () => {
+  it('should throw an error when not used with a String or an Array within an object', () => {
     const invalidType = () => {
       mapDispatch({
+        // @ts-ignore
         state: { setMyProperty: true },
+        // @ts-ignore
         user: false,
       })(store.getState());
-    }
+    };
 
     expect(invalidType).toThrowError('The props in an object must be either an array or a string');
   });
 
-  test('does not use mapDispatch with a String in an Array within an object', () => {
+  it('should throw an error when not used with a String in an Array within an object', () => {
     const invalidType = () => {
       mapDispatch({
+        // @ts-ignore
         state: [5],
       })(store.getState());
-    }
+    };
 
     expect(invalidType).toThrowError('The props in the arrays within an object must be a string');
   });

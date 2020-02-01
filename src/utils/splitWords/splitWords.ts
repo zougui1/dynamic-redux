@@ -1,4 +1,4 @@
-import { removeSpaces } from '.';
+import { removeSpaces } from '..';
 
 /**
  * split the words of a string

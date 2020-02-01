@@ -1,9 +1,9 @@
 import { CombineStates } from './CombineStates';
 import { connect } from './connect';
 import { createStore } from './createStore';
-import { mapDispatch } from './mapDispatch';
+import { mapDispatch } from './mapDispatch/mapDispatch';
 import { mapState } from './mapState';
-import { MiddlewareCreator } from './MiddlewareCreator';
+import { MiddlewareCreator } from './MiddlewareCreator/MiddlewareCreator';
 import { QueryDispatch } from './QueryDispatch';
 import { StateCreator } from './StateCreator';
 import { State, Action, Trigger, Hook } from './Decorators';

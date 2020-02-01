@@ -1,7 +1,7 @@
 import { combineReducers, Reducer } from 'redux';
 
 import { StateCreator } from 'src/StateCreator';
-import { ObjectOf, GlobalScope } from './common';
+import { ObjectOf, GlobalScope } from '../common';
 
 export class CombineStates {
 

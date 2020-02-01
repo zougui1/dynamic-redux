@@ -1,6 +1,6 @@
 import { Middleware } from 'redux';
 
-import { allActions } from 'src/common';
+import { AllActions, actionList } from '../common';
 
 export class MiddlewareCreator<T = any> {
 
@@ -14,7 +14,7 @@ export class MiddlewareCreator<T = any> {
    * @type {String}
    * @private
    */
-  public actionKind: keyof typeof allActions | '*';
+  public actionKind: AllActions | '*';
 
   /**
    * @type {Middleware}
@@ -28,7 +28,13 @@ export class MiddlewareCreator<T = any> {
    * @param {String} kind
    * @public
    */
-  constructor(action: keyof T, kind: keyof typeof allActions) {
+  constructor(action: keyof T, kind: AllActions | '*') {
+
+    // @ts-ignore
+    if (kind !== '*' && !actionList.includes(kind)) {
+      throw new Error(`the kind of action is invalid. Got "${kind}"`);
+    }
+
     this.actionName = action;
     this.actionKind = kind;
   }
@@ -39,6 +45,10 @@ export class MiddlewareCreator<T = any> {
    * @public
    */
   handle = (handler: Middleware) => {
+    if (typeof handler !== 'function') {
+      throw new Error(`The middleware handler must be a function. Got "${handler}"`);
+    }
+
     this.handler = handler;
     return this;
   }

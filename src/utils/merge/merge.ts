@@ -8,8 +8,8 @@ import { ObjectLiteral } from 'src/common';
  */
 export function merge(target: ObjectLiteral, ...sources: ObjectLiteral[]): object {
   for (const source of sources) {
-    for (const key in target) {
-      if (target.hasOwnProperty(key)) {
+    for (const key in source) {
+      if (source.hasOwnProperty(key)) {
         target[key] = source[key];
       }
     }

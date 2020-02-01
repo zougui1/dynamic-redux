@@ -1,10 +1,10 @@
 import {
   ActionDispatcher,
   Selector,
-  generalActions,
-  arrayActions,
-  objectActions,
-  numberActions,
+  GeneralActions,
+  ArrayActions,
+  ObjectActions,
+  NumberActions,
   ObjectOf,
   ActionDefinition,
 } from '../common';
@@ -33,14 +33,14 @@ export interface StateOptions {
   strictTyping?: boolean;
 }
 
-export type EnumerateActionsForType<T> = ActionDefinition<typeof generalActions> | (
+export type EnumerateActionsForType<T> = (
   T extends any[]
-    ? ActionDefinition<typeof arrayActions>
+    ? ActionDefinition<ArrayActions | GeneralActions>
     : T extends object
-      ? ActionDefinition<typeof objectActions>
+      ? ActionDefinition<ObjectActions | GeneralActions>
       : T extends number
-        ? ActionDefinition<typeof numberActions>
-        : ActionDefinition<typeof generalActions>
+        ? ActionDefinition<NumberActions | GeneralActions>
+        : ActionDefinition<GeneralActions>
 );
 export type ObjectOfActionsDefinition<T> = {
   [P in keyof T]: EnumerateActionsForType<T[P]>;

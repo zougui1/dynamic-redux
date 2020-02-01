@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 
-import { ObjectLiteral, GlobalScope, ActionKinds } from '../common';
+import { ObjectLiteral, GlobalScope, ActionKinds } from '../../common';
 
 export function createSpecificActionDecorator(actionKinds: ActionKinds | ActionKinds[]) {
   return () => {

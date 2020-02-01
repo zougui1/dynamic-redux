@@ -1,4 +1,4 @@
-import { prefixUpSource } from './prefixUpSource';
+import { prefixUpSource } from '../prefixUpSource';
 
 /**
  * add a `prefix` to all the `strings` and upper the first character of the `strings`
